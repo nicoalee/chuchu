@@ -1,0 +1,69 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.TD {
+  background-color: #007213 !important;
+  color: white !important;
+}
+
+.TD-button {
+  background-color: white !important;
+  color: #007213 !important;
+}
+
+.TD-button:hover {
+  background-color: lightgray !important;
+}
+
+.CIBC {
+  background-color: #b00b1c !important;
+  color: #ffd400 !important;
+}
+
+.CIBC-button {
+  background-color: white !important;
+  color: #b00b1c !important;
+}
+
+.CIBC-button:hover {
+  background-color: lightgray !important;
+}
+
+.RBC {
+  background-color: #0050a6 !important;
+  color: #ffe005 !important;
+}
+
+.RBC-button {
+  background-color: white !important;
+  color: #0050a6 !important;
+}
+
+.RBC-button:hover {
+  background-color: lightgray !important;
+}
+
+.SCOTIABANK {
+  background-color: #e2001a !important;
+  color: white !important
+}
+
+.SCOTIABANK-button {
+  background-color: white !important;
+  color: #e2001a !important;
+}
+
+.SCOTIABANK-button:hover {
+  background-color: lightgray !important;
+}
