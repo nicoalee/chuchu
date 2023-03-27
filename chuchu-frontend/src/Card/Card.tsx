@@ -11,9 +11,11 @@ import AddGoalDialog from './ModifyGoalDialog/AddGoalDialog';
 import AddCategoryDialog from './AddCategoryDialog/AddCategoryDialog';
 import useGetTotalRewards from 'hooks/useGetTotalRewards';
 import './Card.css';
+import useGetTotalSpend from 'hooks/useGetTotalSpend';
 
 const Card: React.FC = (props) => {
     const { cardId } = useParams<{ cardId: string }>();
+    const totalExpenditure = useGetTotalSpend(cardId || '');
     const [ addGoalDialogIsOpen, setAddGoalDialogIsOpen ] = useState(false);
     const [ editGoalDialogIsOpen, setEditGoalDialogIsOpen ] = useState(false);
     const [ addCategoryDialogIsOpen, setAddCategoryDialogIsOpen ] = useState(false);
@@ -80,6 +82,12 @@ const Card: React.FC = (props) => {
                         </Typography>
                         <Typography variant="h4" sx={{ color: 'green' }}>{totalRewards}</Typography>
                     </Box>
+                    <Box>
+                        <Typography variant="h6" sx={{ color: 'blue' }}>
+                            Total Expenditure:
+                        </Typography>
+                        <Typography variant="h4" sx={{ color: 'blue' }}>{totalExpenditure}</Typography>
+                    </Box>
                 </Box>
                 <Box sx={{ marginBottom: '1rem' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -94,7 +102,7 @@ const Card: React.FC = (props) => {
                     </Box>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                         {(card?.goals || []).map((goal) => (
-                            <Goal key={goal.id} {...goal} />
+                            <Goal key={goal.id} {...goal} cardId={cardId} />
                         ))}
                     </Box>
                     <AddGoalDialog isOpen={addGoalDialogIsOpen} onClose={() => setAddGoalDialogIsOpen(false)} />
@@ -112,7 +120,12 @@ const Card: React.FC = (props) => {
                     </Box>
                     <Box>
                         {(card?.categories || []).map((category) => (
-                            <Chip onDelete={() => handleDeleteCategory(category.id)} key={category.name} sx={{ marginRight: '5px', marginBottom: '5px' }} label={`${category.name}: ${category.rewardRatio} ${ card.type === 'CASHBACK' ? 'dollars per dollar' : 'points per dollar' }`} />
+                            <Chip 
+                                onDelete={() => handleDeleteCategory(category.id)} 
+                                key={category.name} 
+                                sx={{ marginRight: '5px', marginBottom: '5px' }} 
+                                label={`${category.name}: ${category.rewardRatio} ${ card.type === 'CASHBACK' ? 'dollars per dollar' : 'points per dollar' }`} 
+                            />
                         ))}
                     </Box>
                     <AddCategoryDialog isOpen={addCategoryDialogIsOpen} onClose={() => setAddCategoryDialogIsOpen(false)} />

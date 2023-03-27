@@ -1,4 +1,8 @@
 .table-cell {
-    color: white;
-    padding: 8px;
+    color: white !important;
+    padding: 8px !important;
+}
+
+.table-header {
+    
 }

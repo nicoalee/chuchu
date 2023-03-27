@@ -15,7 +15,7 @@ interface ModifiedTransaction {
 }
 
 const getCycle = (
-    mode: 'actual' | 'payment', // actual cycle is the 
+    mode: 'actual' | 'payment',
     transactionDateStr: string, 
     openDateStr: string, 
     cycleStartDate: number
@@ -23,7 +23,7 @@ const getCycle = (
     let cycleStartStr;
     if (mode === 'payment') {
         const openDate = new Date(openDateStr);
-        const month = ('0' + openDate.getMonth() + 1).slice(-2);
+        const month = ('0' + (openDate.getMonth() + 1)).slice(-2);
         const date = ('0' + cycleStartDate).slice(-2)
         cycleStartStr = `${openDate.getFullYear()}-${month}-${date}`;
     } else {
@@ -91,7 +91,6 @@ const TransactionTable: React.FC = (props) => {
     }));
 
     const handleRowUpdate = (newRow: ModifiedTransaction, oldRow: ModifiedTransaction) => {
-        console.log(newRow)
         const categoryIndex = categories.findIndex(x => x.id === newRow.category);
         if (categoryIndex < 0) return oldRow
 
@@ -106,13 +105,17 @@ const TransactionTable: React.FC = (props) => {
             date: `${updatedDate.toISODate()}`,
             category: categories[categoryIndex]
         })
-        console.log(`${updatedDate.toISODate()}`)
         return transaction
     }
 
     return (
         <Box sx={{ height: `${(rows.length * 52) + 58}px` }}>
             <DataGrid 
+                initialState={{
+                    sorting: {
+                        sortModel: [{ field: 'date', sort: 'desc' }]
+                    }
+                }}
                 editMode='row' 
                 processRowUpdate={handleRowUpdate} 
                 hideFooter 

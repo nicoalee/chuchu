@@ -1,4 +1,4 @@
-import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Typography, Box } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Typography, Box, Switch, FormGroup, InputLabel } from "@mui/material";
 import { IGoal, useAddOrUpdateGoal } from "CardStore";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -8,6 +8,8 @@ const AddGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (props
 
     const addOrUpdateGoal = useAddOrUpdateGoal();
 
+    const [isRepeatedGoalMode, setIsRepeatedGoalMode] = useState(false);
+
     const [ goalState, setGoalState ] = useState<IGoal>({
         id: '',
         name: '',
@@ -15,14 +17,43 @@ const AddGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (props
         reward: 0,
         altReward: '',
         spendRequired: 0,
-        goalStartDate: '',
-        goalEndDate: ''
+        metadata: {
+            goalMode: 'single-goal',
+            configs: undefined
+        },
     });
 
     const updateValue = (fieldName: keyof IGoal, value: any) => {
         setGoalState((state) => ({
             ...state,
             [fieldName]: value
+        }))
+    }
+
+    const handleUpdateSingleGoalConfig = (date: 'goalStartDate' | 'goalEndDate', value: string) => {
+        setGoalState((state) => ({
+            ...state,
+            metadata: {
+                goalMode: 'single-goal',
+                configs: {
+                    ...state.metadata.configs,
+                    [date]: value,
+                }
+            }
+        }))
+    }
+
+    const handleUpdateRepeatedGoalConfig = (field: 'goalStartDate' | 'repeatType' | 'numOccurrences', value: string | number) => {
+        setGoalState((state) => ({
+            ...state,
+            metadata: {
+                goalMode: 'repeated-goal',
+                configs: {
+                    ...state.metadata.configs,
+                    repeatType: 'monthly',
+                    [field]: value
+                }
+            }
         }))
     }
 
@@ -49,36 +80,67 @@ const AddGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (props
                     sx={{ width: '100%', marginBottom: '1rem' }} 
                     label="description" 
                 />
-                <TextField 
-                    onChange={(event) => updateValue('reward', parseInt(event.target.value))} 
-                    sx={{ width: '100%', marginBottom: '1rem' }} 
-                    type="number" 
-                    label="reward"
-                />
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                    <TextField 
+                        onChange={(event) => updateValue('spendRequired', parseInt(event.target.value))} 
+                        sx={{ width: '49%' }} 
+                        type="number" 
+                        label="Minimum Spend Required" 
+                    />
+                    <TextField 
+                        onChange={(event) => updateValue('reward', parseInt(event.target.value))} 
+                        sx={{ width: '49%' }} 
+                        type="number" 
+                        label="reward"
+                    />
+                </Box>
                 <TextField 
                     onChange={(event) => updateValue('altReward', event.target.value)} 
                     sx={{ width: '100%', marginBottom: '1rem' }}
-                    label="Alternative reward" 
+                    label="Alternative reward (optional)" 
                 />
-                <TextField 
-                    onChange={(event) => updateValue('spendRequired', parseInt(event.target.value))} 
-                    sx={{ width: '100%' }} 
-                    type="number" 
-                    label="Minimum Spend Required" 
-                />
-                <Box sx={{ display: 'flex', marginTop: '1rem', justifyContent: 'space-between' }}>
-                    <Box sx={{ width: '45%', display: 'flex', justifyContent: 'flex-end', flexDirection: 'column' }}>
-                        <Typography>Goal Start Date</Typography>
-                        <TextField
-                            onChange={(event) => updateValue('goalStartDate', event.target.value)} 
-                            type="date" />
-                    </Box>
-                    <Box sx={{ width: '45%', display: 'flex', justifyContent: 'flex-end', flexDirection: 'column' }}>
-                        <Typography>Goal End Date</Typography>
-                        <TextField 
-                            onChange={(event) => updateValue('goalEndDate', event.target.value)} 
-                            type="date" />
-                    </Box>
+                <Box sx={{ marginTop: '1rem' }}>
+                    <FormGroup>
+                        <InputLabel>
+                            {isRepeatedGoalMode ? 'Repeated Goal' : 'Single Goal'}
+                         </InputLabel>
+                         <Switch value={isRepeatedGoalMode} onChange={() => setIsRepeatedGoalMode(prev => !prev)} />
+                    </FormGroup>
+                    {
+                        isRepeatedGoalMode ? (
+                            <Box>
+                                <Typography gutterBottom>Goal Start Date</Typography>
+                                <Box sx={{ display: 'flex' }}>
+                                    <TextField
+                                        sx={{ width: '180px', marginRight: '10px' }}
+                                        onChange={(event) => handleUpdateRepeatedGoalConfig('goalStartDate', event.target.value)} 
+                                        type="date" />
+                                    <TextField sx={{ width: '110px', marginRight: '10px' }} value="monthly" disabled />
+                                    <TextField 
+                                        onChange={(event) => handleUpdateRepeatedGoalConfig('numOccurrences', parseInt(event.target.value) || 0)} 
+                                        sx={{ flexGrow: 1 }} 
+                                        type="number" 
+                                        label="# of occurrences" 
+                                    />
+                                </Box>
+                            </Box>
+                        ) : (
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Box sx={{ width: '49%', display: 'flex', justifyContent: 'flex-end', flexDirection: 'column' }}>
+                                    <Typography>Goal Start Date</Typography>
+                                    <TextField
+                                        onChange={(event) => handleUpdateSingleGoalConfig('goalStartDate', event.target.value)} 
+                                        type="date" />
+                                </Box>
+                                <Box sx={{ width: '49%', display: 'flex', justifyContent: 'flex-end', flexDirection: 'column' }}>
+                                    <Typography>Goal End Date</Typography>
+                                    <TextField 
+                                        onChange={(event) => handleUpdateSingleGoalConfig('goalEndDate', event.target.value)} 
+                                        type="date" />
+                                </Box> 
+                            </Box>
+                        )
+                    }
                 </Box>
             </DialogContent>
             <DialogActions>

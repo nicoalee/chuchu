@@ -15,6 +15,17 @@ export interface ICategory {
     rewardRatio: number;
 }
 
+export interface ISingleGoalConfig {
+    goalStartDate?: string;
+    goalEndDate?: string;
+}
+
+export interface IRepeatedGoalConfig {
+    goalStartDate?: string;
+    repeatType?: 'monthly';
+    numOccurrences?: number;
+}
+
 export interface IGoal {
     id: string;
     name: string;
@@ -22,8 +33,10 @@ export interface IGoal {
     reward: number;
     altReward: string;
     spendRequired: number;
-    goalStartDate: string;
-    goalEndDate: string;
+    metadata: {
+        goalMode: 'single-goal' | 'repeated-goal',
+        configs?: ISingleGoalConfig | IRepeatedGoalConfig
+    };
 }
 
 export interface ITransaction {
@@ -353,6 +366,11 @@ export const useGetGoals = (cardId: string) => {
     const foundCard = useGetCard(cardId);
     if (!foundCard) return [];
     return foundCard.goals
+}
+
+export const useGetGoal = (cardId: string, goalId: string) => {
+    const goals = useGetGoals(cardId);
+    return goals.find(x => x.id === goalId);
 }
 
 export const useGetCardTransactions = (cardId: string) => {
