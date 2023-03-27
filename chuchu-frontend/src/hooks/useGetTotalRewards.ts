@@ -7,7 +7,7 @@ const useGetTotalRewards = (cardId: string) => {
 
     useEffect(() => {
         const total = transactions.reduce((acc, curr) => {
-            return acc + (curr.amount * curr.category.rewardRatio)
+            return acc + (curr.hardCodedReward ? curr.hardCodedReward : (curr.amount * curr.category.rewardRatio))
         }, 0)
         setTotalRewards(Math.round(total));
     }, [transactions])

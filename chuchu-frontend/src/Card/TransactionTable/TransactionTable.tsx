@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Box, Button } from '@mui/material';
-import { useAddOrUpdateTransaction, useDeleteTransaction, useGetCardCategories, useGetCardCycleData, useGetCardTransactions } from "../../CardStore";
+import { useAddOrUpdateTransaction, useDeleteTransaction, useGetCard, useGetCardCategories, useGetCardCycleData, useGetCardTransactions } from "../../CardStore";
 import { useParams } from "react-router-dom";
 import React from "react";
 import { DateTime } from "luxon";
@@ -22,10 +22,10 @@ const getCycle = (
 ) => {
     let cycleStartStr;
     if (mode === 'payment') {
-        const openDate = new Date(openDateStr);
-        const month = ('0' + (openDate.getMonth() + 1)).slice(-2);
+        const openDate = DateTime.fromISO(openDateStr);
+        const month = ('0' + (openDate.month)).slice(-2);
         const date = ('0' + cycleStartDate).slice(-2)
-        cycleStartStr = `${openDate.getFullYear()}-${month}-${date}`;
+        cycleStartStr = `${openDate.year}-${month}-${date}`;
     } else {
         cycleStartStr = openDateStr;
     }
@@ -34,12 +34,13 @@ const getCycle = (
     const actualCycleStartDate = DateTime.fromISO(cycleStartStr);
 
     const diffInMonthsObj = transactionDate.diff(actualCycleStartDate, 'months').toObject();
-    const diffInMonths = Math.floor(diffInMonthsObj.months || 0);
-    return diffInMonths < 0 ? 0 : diffInMonths + 1;
+    const diffInMonths = Math.floor(diffInMonthsObj.months || 1);
+    return diffInMonths + 1;
 }
 
 const TransactionTable: React.FC = (props) => {
     const { cardId } = useParams<{ cardId: string }>();
+    const card = useGetCard(cardId || '');
     const transactions = useGetCardTransactions(cardId || '');
     const categories = useGetCardCategories(cardId || '');
     const deleteTransaction = useDeleteTransaction();
@@ -48,8 +49,8 @@ const TransactionTable: React.FC = (props) => {
 
     const columns: GridColDef<ModifiedTransaction>[] = [
         { field: "date", headerName: "Date", type: "date", editable: true, width: 100 },
-        { field: "payee", headerName: "Payee", editable: true },
-        { field: "note", headerName: "Note", editable: true, flex: 1 },
+        { field: "payee", headerName: "Payee", editable: true, flex: 1 },
+        { field: "note", headerName: "Note", editable: true, flex: 3 },
         { field: "amount", headerName: "Amount", type: 'number', editable: true },
         { 
             field: "category", 
@@ -82,10 +83,14 @@ const TransactionTable: React.FC = (props) => {
         id: transaction.id,
         date: new Date(`${transaction.date} EST`),
         amount: transaction.amount,
-        payee: transaction.payee,
+        payee: transaction.hardCodedReward ? 'RECONCILIATION' : transaction.payee,
         note: transaction.note,
         category: transaction.category.id,
-        reward: Math.round(transaction.amount * transaction.category.rewardRatio),
+        reward: transaction.hardCodedReward ? 
+            transaction.hardCodedReward :
+                card?.type === 'CASHBACK' ?
+                    Math.round(transaction.amount * transaction.category.rewardRatio * 100) / 100 :
+                    Math.round(transaction.amount * transaction.category.rewardRatio),
         paymentCycle: getCycle('payment', transaction.date, cycleData?.openDate || '', cycleData?.cycleStartDay || 0),
         actualCycle: getCycle('actual', transaction.date, cycleData?.openDate || '', cycleData?.cycleStartDay || 0),
     }));
@@ -109,17 +114,17 @@ const TransactionTable: React.FC = (props) => {
     }
 
     return (
-        <Box sx={{ height: `${(rows.length * 52) + 58}px` }}>
+        <Box sx={{ height: '100%' }}>
             <DataGrid 
                 initialState={{
                     sorting: {
                         sortModel: [{ field: 'date', sort: 'desc' }]
                     }
                 }}
-                editMode='row' 
+                editMode='row'
                 processRowUpdate={handleRowUpdate} 
-                hideFooter 
                 rows={rows} 
+                autoHeight
                 columns={columns} 
             />
         </Box>

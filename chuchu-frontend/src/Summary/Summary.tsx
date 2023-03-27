@@ -1,4 +1,4 @@
-import { Box, Breadcrumbs, Link, Typography, Button } from '@mui/material';
+import { Box, Breadcrumbs, Link, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import CardSummary from './CardSummary/CardSummary';
 import React from 'react';
 import CreateCardDialog from './CreateCardDialog/CreateCardDialog'
@@ -21,9 +21,21 @@ const Summary = () => {
                 <Button variant="contained" onClick={() => setCardDialogIsOpen(true)}>Add New Card</Button>
             </Box>
             <Box sx={{ marginTop: '1rem' }}>
-                {cards.map((card) => (
+                {(cards || []).filter(x => !x.closeDate).map((card) => (
                     <CardSummary key={card.id} {...card} />
                 ))}
+            </Box>
+            <Box>
+                <Accordion>
+                    <AccordionSummary>
+                        <Typography>Closed Cards</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {(cards || []).filter(x => !!x.closeDate).map((card) => (
+                            <CardSummary key={card.id} {...card} />
+                        ))}
+                    </AccordionDetails>
+                </Accordion>
             </Box>
         </Box>
     )

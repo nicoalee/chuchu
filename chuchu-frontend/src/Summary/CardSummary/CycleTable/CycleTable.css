@@ -1,6 +1,7 @@
 .table-cell {
     color: white !important;
     padding: 8px !important;
+    min-width: 100px !important;
 }
 
 .table-header {

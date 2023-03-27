@@ -25,12 +25,12 @@ app.get("/", (req, res) => {
 })
 
 app.get('/cards', (req, res) => {
-    console.log(`received req: ${req}`)
+    console.log(req.route)
     res.json(db.data || [])
 });
 
 app.get("/cards/:cardId", (req, res) => {
-    console.log(`received req: ${req}`)
+    console.log(req.route)
     if (db.data) {
         const cardId = req.params.cardId;
         const card = db.data.find(card => card.id === cardId);
@@ -45,6 +45,7 @@ app.get("/cards/:cardId", (req, res) => {
 });
 
 app.put("/cards", (req, res) => {
+    console.log(req.route)
     db.data = req.body
     db.write();
     res.sendStatus(200);
@@ -52,7 +53,8 @@ app.put("/cards", (req, res) => {
 })
 
 app.post("/cards", (req, res) => {
-    console.log(`received req: ${JSON.stringify(req.body)}`)
+    console.log(req.route)
+    console.log(req.body)
 
     const dbData = db.data || [];
     dbData.push(req.body);
@@ -63,7 +65,7 @@ app.post("/cards", (req, res) => {
 })
 
 app.delete("/cards/:cardId", (req, res) => {
-    console.log(`received req: ${req}`)
+    console.log(req.route)
     if (db.data) {
         db.data = db.data.filter(x => x.id === req.params.cardId)
         db.write();

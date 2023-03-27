@@ -2,28 +2,28 @@ import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/ma
 import './CardSummary.css';
 import { useNavigate } from 'react-router-dom';
 import React from "react";
-import { ICard, ITransaction } from "CardStore";
+import { ICard, useGetCardTransactions, useGetGoals } from "CardStore";
 import CycleTable from "./CycleTable/CycleTable";
+import useGetTotalRewards from "hooks/useGetTotalRewards";
+import { getTotalBonusesFromGoals } from "Card/TotalRewards";
 
-const getTotalRewards = (transactions: ITransaction[]) => {
-    const rewards = transactions.map(transaction => transaction.amount * transaction.category.rewardRatio)
-    return Math.round(rewards.reduce((acc, curr) => acc + curr, 0))
-}
-
-const CardSummary: React.FC<ICard> = (card) => {
+const CardSummary: React.FC<ICard> = (props) => {
+    const totalRewards = useGetTotalRewards(props.id || '');
+    const transactions = useGetCardTransactions(props.id || '');
+    const goals = useGetGoals(props.id || '');
+    const totalBonuses = getTotalBonusesFromGoals(transactions, goals)
     const navigate = useNavigate();
-    const totalRewards = getTotalRewards(card.transactions)
 
     return (
         <Box sx={{ marginBottom: '15px' }}>
-            <Card className={`${card.company}`} variant="outlined">
+            <Card className={`${props.company}`} variant="outlined">
                 <CardContent>
-                    <Typography variant="caption">{ card.openDate }</Typography>
-                    <Typography variant="h5">{card.name}</Typography>
-                    <Typography gutterBottom>{card.description}</Typography>
+                    <Typography variant="caption">{ props.openDate }</Typography>
+                    <Typography variant="h5">{props.name}</Typography>
+                    <Typography gutterBottom>{props.description}</Typography>
                     <Box sx={{ display: 'flex' }}>
                         <Box sx={{ 
-                            width: '180px', 
+                            width: '350px', 
                             border: '2px solid white', 
                             padding: '0.5rem 1.5rem', 
                             borderRadius: '4px', 
@@ -32,21 +32,29 @@ const CardSummary: React.FC<ICard> = (card) => {
                             flexDirection: 'column',
                             justifyContent: 'center'
                         }}>
-                            <Typography>Total Rewards</Typography>
-                            <Typography variant="h4">{ totalRewards }</Typography>
+                            <Typography variant="h6">
+                                Total Rewards:
+                            </Typography>
+                            <Box>
+                                <Typography variant="h4" sx={{ display: 'inline-block' }}>{totalRewards}</Typography>
+                                <Typography sx={{ display: 'inline-block', margin: '0 10px' }} variant="h4">+</Typography>
+                                <Typography variant="h4" sx={{ display: 'inline-block' }}>{totalBonuses}</Typography>
+                                <Typography sx={{ display: 'inline-block', marginLeft: '10px' }} variant="h4">=</Typography>
+                                <Typography variant="h4">{totalBonuses + totalRewards}</Typography>
+                            </Box>
                         </Box>
                         <Box sx={{ width: '100%', paddingLeft: '0.5rem', overflowX: 'auto' }}>
-                            <CycleTable />
+                            <CycleTable cardId={props.id} />
                         </Box>
                     </Box>
                 </CardContent>
                 <CardActions>
                     <Button 
-                        onClick={() => navigate(`/cards/${card.id}`)} 
+                        onClick={() => navigate(`/cards/${props.id}`)} 
                         sx={{ marginLeft: '0.5rem' }} 
                         size="large" 
                         disableElevation 
-                        className={`${card.company}-button`} 
+                        className={`${props.company}-button`} 
                         variant="contained"
                     >
                         View Card

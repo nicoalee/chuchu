@@ -1,5 +1,5 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, Typography, Box, Switch, FormGroup, InputLabel } from "@mui/material";
-import { IGoal, useAddOrUpdateGoal } from "CardStore";
+import { IGoal, IRepeatedGoalConfig, ISingleGoalConfig, useAddOrUpdateGoal } from "CardStore";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -66,6 +66,14 @@ const AddGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (props
         }
     }
 
+    const disableCreate = 
+        goalState.name === '' || 
+        !goalState.spendRequired || 
+        (
+            (!goalState.metadata.configs?.goalStartDate || !(goalState.metadata.configs as ISingleGoalConfig)?.goalEndDate) && 
+            !(goalState.metadata.configs as IRepeatedGoalConfig)?.numOccurrences
+        )
+
     return (
         <Dialog fullWidth maxWidth="xs" open={props.isOpen} onClose={props.onClose}>
             <DialogTitle>Add Goal</DialogTitle>
@@ -112,10 +120,10 @@ const AddGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (props
                                 <Typography gutterBottom>Goal Start Date</Typography>
                                 <Box sx={{ display: 'flex' }}>
                                     <TextField
-                                        sx={{ width: '180px', marginRight: '10px' }}
+                                        sx={{ width: '220px', marginRight: '10px' }}
                                         onChange={(event) => handleUpdateRepeatedGoalConfig('goalStartDate', event.target.value)} 
                                         type="date" />
-                                    <TextField sx={{ width: '110px', marginRight: '10px' }} value="monthly" disabled />
+                                    <TextField sx={{ width: '130px', marginRight: '10px' }} label="monthly" disabled />
                                     <TextField 
                                         onChange={(event) => handleUpdateRepeatedGoalConfig('numOccurrences', parseInt(event.target.value) || 0)} 
                                         sx={{ flexGrow: 1 }} 
@@ -144,7 +152,7 @@ const AddGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (props
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleCreate}>Create</Button>
+                <Button disabled={disableCreate} onClick={handleCreate}>Create</Button>
             </DialogActions>
         </Dialog>
     )

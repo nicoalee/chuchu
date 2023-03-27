@@ -9,7 +9,7 @@ const useGetTotalSpend = (cardId: string) => {
         const total = transactions.reduce((acc, curr) => {
             return acc + (curr.amount)
         }, 0)
-        setTotalRewards(total);
+        setTotalRewards(Math.round(total * 100) / 100);
     }, [transactions])
     
     return totalRewards;

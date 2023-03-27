@@ -43,6 +43,14 @@ const EditGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void, goal: IGo
         }
     }
 
+    const disableCreate = 
+        goalState.name === '' || 
+        !goalState.spendRequired || 
+        (
+            (!goalState.metadata.configs?.goalStartDate || !(goalState.metadata.configs as ISingleGoalConfig)?.goalEndDate) && 
+            !(goalState.metadata.configs as IRepeatedGoalConfig)?.numOccurrences
+        )
+
     return (
         <Dialog fullWidth maxWidth="xs" open={props.isOpen} onClose={props.onClose}>
             <DialogTitle>Edit Goal</DialogTitle>
@@ -105,13 +113,13 @@ const EditGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void, goal: IGo
                         <Box sx={{ display: 'flex' }}>
                             <TextField 
                                 type="date"
-                                sx={{ width: '140px', marginRight: '10px' }}
+                                sx={{ width: '220px', marginRight: '10px' }}
                                 value={(goalState.metadata.configs as IRepeatedGoalConfig).goalStartDate} 
                                 onChange={(event) => updateGoalMetadataConfig('goalStartDate', event.target.value)}
                             />
                             <TextField
                                 disabled
-                                sx={{ width: '100px', marginRight: '10px' }}
+                                sx={{ width: '140px', marginRight: '10px' }}
                                 value="monthly"
                                 />
                             <TextField 
@@ -126,7 +134,7 @@ const EditGoalDialog: React.FC<{ isOpen: boolean; onClose: () => void, goal: IGo
             </DialogContent>
             <DialogActions sx={{ display: 'flex', justifyContent: 'space-between', margin: '0 1rem' }}>
                 <Button onClick={() => deleteGoal(cardId || '', props.goal.id)} color="error" variant="outlined">Delete goal</Button>
-                <Button onClick={handleUpdate}>Update</Button>
+                <Button disabled={disableCreate} onClick={handleUpdate}>Update</Button>
             </DialogActions>
         </Dialog>
     )

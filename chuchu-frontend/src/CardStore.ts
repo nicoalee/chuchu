@@ -46,6 +46,7 @@ export interface ITransaction {
     payee: string;
     note: string;
     category: ICategory
+    hardCodedReward?: number // for reconciliation
 }
 
 export interface ICard {
@@ -132,7 +133,7 @@ const useCardStore = create<{ cards: ICard[] } & ICardStoreActions>()(
 
                     set((state) => ({
                         ...state,
-                        cards: res.data.cards
+                        cards: res.data.cards || []
                     }))
                 },
                 deleteCard: (cardId: string) => {

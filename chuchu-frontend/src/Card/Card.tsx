@@ -11,11 +11,12 @@ import AddGoalDialog from './ModifyGoalDialog/AddGoalDialog';
 import AddCategoryDialog from './AddCategoryDialog/AddCategoryDialog';
 import useGetTotalRewards from 'hooks/useGetTotalRewards';
 import './Card.css';
-import useGetTotalSpend from 'hooks/useGetTotalSpend';
+import TotalExpenditure from './TotalExpenditure';
+import TotalRewards from './TotalRewards';
+import RequiredSpend from './RequiredSpend';
 
 const Card: React.FC = (props) => {
     const { cardId } = useParams<{ cardId: string }>();
-    const totalExpenditure = useGetTotalSpend(cardId || '');
     const [ addGoalDialogIsOpen, setAddGoalDialogIsOpen ] = useState(false);
     const [ editGoalDialogIsOpen, setEditGoalDialogIsOpen ] = useState(false);
     const [ addCategoryDialogIsOpen, setAddCategoryDialogIsOpen ] = useState(false);
@@ -72,22 +73,9 @@ const Card: React.FC = (props) => {
                         <EditCardDetailsDialog cardData={card} isOpen={editGoalDialogIsOpen} onClose={() => setEditGoalDialogIsOpen(false)} />
                         <Button color="secondary" onClick={() => setEditGoalDialogIsOpen(true)}>Edit</Button>
                     </Box>
-                    <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h6" sx={{ color: 'orange' }}>Required Spend left this month:</Typography>
-                        <Typography variant="h4" sx={{ color: 'orange' }}>0</Typography>
-                    </Box>
-                    <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h6" sx={{ color: 'green' }}>
-                            Total Rewards Earned:
-                        </Typography>
-                        <Typography variant="h4" sx={{ color: 'green' }}>{totalRewards}</Typography>
-                    </Box>
-                    <Box>
-                        <Typography variant="h6" sx={{ color: 'blue' }}>
-                            Total Expenditure:
-                        </Typography>
-                        <Typography variant="h4" sx={{ color: 'blue' }}>{totalExpenditure}</Typography>
-                    </Box>
+                    <RequiredSpend cardId={cardId} />
+                    <TotalRewards cardId={cardId} />
+                    <TotalExpenditure cardId={cardId} />
                 </Box>
                 <Box sx={{ marginBottom: '1rem' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -113,7 +101,7 @@ const Card: React.FC = (props) => {
                         <Button
                             color="secondary" 
                             onClick={() => setAddCategoryDialogIsOpen(true)} 
-                            sx={{ marginTop: '0.5rem', marginLeft: '15px', marginBottom: '1rem' }}
+                            sx={{ marginTop: '0.5rem', marginLeft: '15px' }}
                         >
                             Add category
                         </Button>
@@ -124,7 +112,7 @@ const Card: React.FC = (props) => {
                                 onDelete={() => handleDeleteCategory(category.id)} 
                                 key={category.name} 
                                 sx={{ marginRight: '5px', marginBottom: '5px' }} 
-                                label={`${category.name}: ${category.rewardRatio} ${ card.type === 'CASHBACK' ? 'dollars per dollar' : 'points per dollar' }`} 
+                                label={`${category.name}: ${category.rewardRatio} ${ card.type === 'CASHBACK' ? 'cashback per dollar' : 'points per dollar' }`} 
                             />
                         ))}
                     </Box>
