@@ -3,14 +3,19 @@ import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
 import bodyparser from 'body-parser';
 import cors from 'cors';
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const app = express();
 const PORT = 3080;
 
-const adapter = new JSONFile('db.json')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const file = join(__dirname, 'db.json')
+
+const adapter = new JSONFile(file)
 const db = new Low(adapter)
 
-app.use(bodyparser.json())
+app.use(bodyparser.json({ limit: '50mb' }))
 app.use(bodyparser.urlencoded({extended: true}))
 app.use(cors())
 

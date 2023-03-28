@@ -51,6 +51,7 @@ const CreateCardDialog: React.FC<{ isOpen: boolean; onClose: () => void }> = (pr
                         <MenuItem value={ECompany.CIBC}>CIBC</MenuItem>
                         <MenuItem value={ECompany.RBC}>RBC</MenuItem>
                         <MenuItem value={ECompany.SCOTIABANK}>Scotiabank</MenuItem>
+                        <MenuItem value={ECompany.AMEX}>American Express</MenuItem>
                     </Select>
                 </FormControl>
 

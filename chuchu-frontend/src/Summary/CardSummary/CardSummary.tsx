@@ -23,9 +23,8 @@ const CardSummary: React.FC<ICard> = (props) => {
                     <Typography gutterBottom>{props.description}</Typography>
                     <Box sx={{ display: 'flex' }}>
                         <Box sx={{ 
-                            width: '350px', 
+                            width: '320px', 
                             border: '2px solid white', 
-                            padding: '0.5rem 1.5rem', 
                             borderRadius: '4px', 
                             display: 'flex',
                             alignItems: 'center',
@@ -36,10 +35,12 @@ const CardSummary: React.FC<ICard> = (props) => {
                                 Total Rewards:
                             </Typography>
                             <Box>
-                                <Typography variant="h4" sx={{ display: 'inline-block' }}>{totalRewards}</Typography>
-                                <Typography sx={{ display: 'inline-block', margin: '0 10px' }} variant="h4">+</Typography>
-                                <Typography variant="h4" sx={{ display: 'inline-block' }}>{totalBonuses}</Typography>
-                                <Typography sx={{ display: 'inline-block', marginLeft: '10px' }} variant="h4">=</Typography>
+                                <Box sx={{ display: 'flex' }}>
+                                    <Typography variant="h4" sx={{ display: 'inline-block' }}>{totalRewards}</Typography>
+                                    <Typography sx={{ display: 'inline-block', margin: '0 5px' }} variant="h4">+</Typography>
+                                    <Typography variant="h4" sx={{ display: 'inline-block' }}>{totalBonuses}</Typography>
+                                    <Typography sx={{ display: 'inline-block', marginLeft: '5px' }} variant="h4">=</Typography>
+                                </Box>
                                 <Typography variant="h4">{totalBonuses + totalRewards}</Typography>
                             </Box>
                         </Box>

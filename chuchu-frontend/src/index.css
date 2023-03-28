@@ -67,3 +67,17 @@ code {
 .SCOTIABANK-button:hover {
   background-color: lightgray !important;
 }
+
+.AMERICANEXPRESS {
+  background-color: #0070d3 !important;
+  color: white !important;
+}
+
+.AMERICANEXPRESS-button {
+  background-color: white !important;
+  color: #0070d3 !important;
+}
+
+.AMERICANEXPRESS-button:hover {
+  background-color: lightgray !important;
+}

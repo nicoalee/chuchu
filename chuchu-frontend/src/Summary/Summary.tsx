@@ -25,8 +25,8 @@ const Summary = () => {
                     <CardSummary key={card.id} {...card} />
                 ))}
             </Box>
-            <Box>
-                <Accordion>
+            <Box sx={{ margin: '1rem 0' }}>
+                <Accordion elevation={4}>
                     <AccordionSummary>
                         <Typography>Closed Cards</Typography>
                     </AccordionSummary>

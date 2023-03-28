@@ -21,7 +21,9 @@ const useBreakDownExpenditureByCycle = (cardId: string | undefined, isPaymentMod
         cycleStartDate = DateTime.fromISO(card?.openDate || '');
     }
 
-    const monthsSinceGoalStart = Math.ceil(cycleStartDate.diffNow('months').months * -1);
+    const monthsSinceGoalStart = card?.closeDate ? 
+        Math.ceil(cycleStartDate.diff(DateTime.fromISO(card.closeDate), 'months').months * -1): 
+        Math.ceil(cycleStartDate.diffNow('months').months * -1);
 
     // account for fact that the cycle starts with date A and ends with date A - 1
     let cycleEndDate = cycleStartDate.plus({ months: 1 }).minus({ days: 1 });
@@ -32,7 +34,10 @@ const useBreakDownExpenditureByCycle = (cardId: string | undefined, isPaymentMod
             cycle: `Cycle ${i + 1}: ${cycleStartDate.toISO().split('T')[0]} - ${cycleEndDate.toISO().split('T')[0]}`,
             expenditure: getTotalSpendBetweenInclusive(transactions, cycleStartDate, cycleEndDate),
             rewardsEarned: getTransactionsBetweenInclusive(transactions, cycleStartDate, cycleEndDate).reduce(
-                (acc, curr) => acc + Math.round(curr.amount * curr.category.rewardRatio), 
+                (acc, curr) => {
+                    const reward = curr.amount * curr.category.rewardRatio
+                    return card?.type === 'CASHBACK' ? Math.round((acc + reward) * 100) / 100 : Math.round(acc + reward)
+                }, 
                 0
             )
         })

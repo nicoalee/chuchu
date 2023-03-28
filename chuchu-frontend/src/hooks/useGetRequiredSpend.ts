@@ -19,8 +19,9 @@ const useGetRequiredSpend = (cardId?: string) => {
             if (endOfEntireCompletedGoal.diffNow('days').days < 0) return;
             
             const monthsSinceGoalStart = Math.ceil(startRepeatedGoalDate.diffNow('months').months * -1);
+            const startRepeatedGoalInstance = startRepeatedGoalDate.plus({ months: monthsSinceGoalStart - 1 });
             const endRepeatedGoalInstance = startRepeatedGoalDate.plus({ months: monthsSinceGoalStart });
-            const expenditureForThisMonth = getTotalSpendBetweenInclusive(transactions, startRepeatedGoalDate, endRepeatedGoalInstance);
+            const expenditureForThisMonth = getTotalSpendBetweenInclusive(transactions, startRepeatedGoalInstance, endRepeatedGoalInstance);
             const spendLeft = goal.spendRequired - expenditureForThisMonth;
             if (requiredSpend < spendLeft) {
                 requiredSpend = spendLeft < 0 ? 0 : spendLeft

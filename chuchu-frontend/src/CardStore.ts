@@ -6,7 +6,8 @@ export enum ECompany {
     TD = 'TD',
     CIBC = 'CIBC',
     SCOTIABANK = 'SCOTIABANK',
-    RBC = 'RBC'
+    RBC = 'RBC',
+    AMEX = 'AMERICANEXPRESS'
 }
 
 export interface ICategory {
@@ -112,7 +113,7 @@ const apiDebouncedUpdaterImpl: APIDebouncedUpdaterImpl = (f, name) => (set, get,
             axios.put('http://localhost:3080/cards', {
                 cards: storeData.cards
             })
-        }, 2000);
+        }, 1000);
 
         set(...a);
     };
