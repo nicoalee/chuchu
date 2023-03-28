@@ -81,3 +81,17 @@ code {
 .AMERICANEXPRESS-button:hover {
   background-color: lightgray !important;
 }
+
+.CHASE {
+  background-color: #0d5ba7 !important;
+  color: white !important;
+}
+
+.CHASE-button {
+  background-color: white !important;
+  color: #0d5ba7 !important;
+}
+
+.CHASE-button:hover {
+  background-color: lightgray;
+}

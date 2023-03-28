@@ -1,13 +1,11 @@
 import { Box, Breadcrumbs, Link, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import CardSummary from './CardSummary/CardSummary';
 import React from 'react';
-import CreateCardDialog from './CreateCardDialog/CreateCardDialog'
 import { useGetCards } from '../CardStore';
+import CreateCardComponent from './CreateCardDialog/CreateCardComponent';
 
 const Summary = () => {
     const cards = useGetCards();
-
-    const [ createCardDialogIsOpen, setCardDialogIsOpen ] = React.useState(false);
 
     return (
         <Box sx={{ padding: '2rem 4rem' }}>
@@ -17,8 +15,7 @@ const Summary = () => {
                         <Typography variant="h6">CC Summary</Typography>
                     </Link>
                 </Breadcrumbs>
-                <CreateCardDialog isOpen={createCardDialogIsOpen} onClose={() => setCardDialogIsOpen(false)} />
-                <Button variant="contained" onClick={() => setCardDialogIsOpen(true)}>Add New Card</Button>
+                <CreateCardComponent />
             </Box>
             <Box sx={{ marginTop: '1rem' }}>
                 {(cards || []).filter(x => !x.closeDate).map((card) => (

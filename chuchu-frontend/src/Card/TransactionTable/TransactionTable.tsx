@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material';
 import { useAddOrUpdateTransaction, useDeleteTransaction, useGetCard, useGetCardCategories, useGetCardCycleData, useGetCardTransactions } from "../../CardStore";
 import { useParams } from "react-router-dom";
 import React from "react";
-import { DateTime } from "luxon";
+import { DateTime, MonthNumbers } from "luxon";
 
 interface ModifiedTransaction {
     id: string;
@@ -23,9 +23,22 @@ const getCycle = (
     let cycleStartStr;
     if (mode === 'payment') {
         const openDate = DateTime.fromISO(openDateStr);
-        const month = ('0' + (openDate.month)).slice(-2);
-        const date = ('0' + cycleStartDate).slice(-2)
-        cycleStartStr = `${openDate.year}-${month}-${date}`;
+        // const month = ('0' + (openDate.month)).slice(-2);
+        let monthNum = openDate.month;
+        let yearNum = openDate.year;
+        if (openDate.day < cycleStartDate) {
+            // open date day is earlier, need to set start cycle as the previous month
+            if (monthNum - 1 === 0) {
+                monthNum = 12;
+                yearNum = yearNum - 1;
+            } else {
+                monthNum = monthNum - 1 as MonthNumbers;
+            }
+        }
+
+        const date = ('0' + cycleStartDate).slice(-2);
+        const month = ('0' + monthNum).slice(-2);
+        cycleStartStr = `${yearNum}-${month}-${date}`;
     } else {
         cycleStartStr = openDateStr;
     }

@@ -23,7 +23,7 @@ const CardSummary: React.FC<ICard> = (props) => {
                     <Typography gutterBottom>{props.description}</Typography>
                     <Box sx={{ display: 'flex' }}>
                         <Box sx={{ 
-                            width: '320px', 
+                            width: '350px', 
                             border: '2px solid white', 
                             borderRadius: '4px', 
                             display: 'flex',
