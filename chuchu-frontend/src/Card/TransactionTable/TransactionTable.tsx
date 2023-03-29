@@ -113,8 +113,12 @@ const TransactionTable: React.FC = (props) => {
         if (categoryIndex < 0) return oldRow
 
         const transaction = {
-            ...oldRow,
-            ...newRow,
+            id: newRow.id,
+            date: newRow.date,
+            amount: newRow.amount,
+            payee: newRow.payee,
+            note: newRow.note,
+            category: newRow.category
         }
 
         const updatedDate = DateTime.fromJSDate(newRow.date);

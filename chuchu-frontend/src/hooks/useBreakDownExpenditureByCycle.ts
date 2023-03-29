@@ -35,7 +35,7 @@ const useBreakDownExpenditureByCycle = (cardId: string | undefined, isPaymentMod
             expenditure: getTotalSpendBetweenInclusive(transactions, cycleStartDate, cycleEndDate),
             rewardsEarned: getTransactionsBetweenInclusive(transactions, cycleStartDate, cycleEndDate).reduce(
                 (acc, curr) => {
-                    const reward = curr.amount * curr.category.rewardRatio
+                    const reward = curr.hardCodedReward ? curr.hardCodedReward : curr.amount * curr.category.rewardRatio
                     return card?.type === 'CASHBACK' ? Math.round((acc + reward) * 100) / 100 : Math.round(acc + reward)
                 }, 
                 0
