@@ -29,7 +29,8 @@
     "eject": "react-scripts eject",
     "serve": "serve build",
     "start-server": "node ../backend/index.js",
-    "start-server-and-run": "concurrently \"npm run start-server\" \"npm run serve\""
+    "open-browser": "open -a \"Google Chrome\" http:localhost:3000",
+    "start-server-and-run": "concurrently \"npm run start-server\" \"npm run serve\" \"npm run open-browser\""
   },
   "eslintConfig": {
     "extends": [
