@@ -85,12 +85,12 @@ code {
 }
 
 .HSBC {
-  background-color: #fe0103;
+  background-color: #fe0103 !important;
   color: white !important;
 }
 .HSBC-button {
   background-color: white !important;
-  color: #fe0103;
+  color: #fe0103 !important;
 }
 .HSBC-button:hover {
   background-color: lightgray !important;
