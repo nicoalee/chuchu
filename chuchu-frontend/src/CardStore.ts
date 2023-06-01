@@ -8,7 +8,8 @@ export enum ECompany {
     SCOTIABANK = 'SCOTIABANK',
     RBC = 'RBC',
     AMEX = 'AMERICANEXPRESS',
-    CHASE = 'CHASE'
+    CHASE = 'CHASE',
+    HSBC = 'HSBC'
 }
 
 export interface ICategory {

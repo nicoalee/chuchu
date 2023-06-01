@@ -16,12 +16,10 @@ code {
   background-color: #007213 !important;
   color: white !important;
 }
-
 .TD-button {
   background-color: white !important;
   color: #007213 !important;
 }
-
 .TD-button:hover {
   background-color: lightgray !important;
 }
@@ -30,12 +28,10 @@ code {
   background-color: #b00b1c !important;
   color: #ffd400 !important;
 }
-
 .CIBC-button {
   background-color: white !important;
   color: #b00b1c !important;
 }
-
 .CIBC-button:hover {
   background-color: lightgray !important;
 }
@@ -44,12 +40,10 @@ code {
   background-color: #0050a6 !important;
   color: #ffe005 !important;
 }
-
 .RBC-button {
   background-color: white !important;
   color: #0050a6 !important;
 }
-
 .RBC-button:hover {
   background-color: lightgray !important;
 }
@@ -58,12 +52,10 @@ code {
   background-color: #e2001a !important;
   color: white !important
 }
-
 .SCOTIABANK-button {
   background-color: white !important;
   color: #e2001a !important;
 }
-
 .SCOTIABANK-button:hover {
   background-color: lightgray !important;
 }
@@ -72,12 +64,10 @@ code {
   background-color: #0070d3 !important;
   color: white !important;
 }
-
 .AMERICANEXPRESS-button {
   background-color: white !important;
   color: #0070d3 !important;
 }
-
 .AMERICANEXPRESS-button:hover {
   background-color: lightgray !important;
 }
@@ -86,12 +76,22 @@ code {
   background-color: #0d5ba7 !important;
   color: white !important;
 }
-
 .CHASE-button {
   background-color: white !important;
   color: #0d5ba7 !important;
 }
-
 .CHASE-button:hover {
   background-color: lightgray;
+}
+
+.HSBC {
+  background-color: #fe0103;
+  color: white !important;
+}
+.HSBC-button {
+  background-color: white !important;
+  color: #fe0103;
+}
+.HSBC-button:hover {
+  background-color: lightgray !important;
 }
