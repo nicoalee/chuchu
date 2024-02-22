@@ -1,0 +1,8 @@
+.card-summary-card {
+    background-color: var(--mantine-color-dark-7) !important;
+
+    &:hover {
+        cursor: pointer;
+        background-color: var(--mantine-color-dark-5) !important;
+    }
+}
