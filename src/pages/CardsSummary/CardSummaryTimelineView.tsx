@@ -2,7 +2,7 @@ import { ApexOptions } from 'apexcharts';
 import { getDatabase, onValue, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { getFirebaseApp } from '../../firebase';
+import { getFirebaseApp } from '../../configs';
 import { ICard } from '../../models';
 import classes from './CardSummaryTimelineView.module.css';
 

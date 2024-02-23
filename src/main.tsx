@@ -7,12 +7,17 @@ import '@mantine/notifications/styles.css';
 import '@mantine/dates/styles.css';
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <MantineProvider defaultColorScheme="dark">
-            <Notifications />
-            <App />
-        </MantineProvider>
+        <QueryClientProvider client={queryClient}>
+            <MantineProvider defaultColorScheme="dark">
+                <Notifications />
+                <App />
+            </MantineProvider>
+        </QueryClientProvider>
     </React.StrictMode>
 );

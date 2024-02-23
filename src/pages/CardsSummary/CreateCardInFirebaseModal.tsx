@@ -4,7 +4,7 @@ import { useForm } from '@mantine/form';
 import { Notifications } from "@mantine/notifications";
 import { getDatabase, ref, set } from "firebase/database";
 import { ECardType } from "../../constants";
-import { getFirebaseApp } from "../../firebase";
+import { getFirebaseApp } from "../../configs";
 import { ICard } from "../../models";
 import * as ynab from 'ynab';
 

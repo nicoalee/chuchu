@@ -2,7 +2,7 @@ import { Card, Text, Title } from '@mantine/core';
 import { getDatabase, onValue, ref } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import * as ynab from 'ynab';
-import { getFirebaseApp } from '../../firebase';
+import { getFirebaseApp } from '../../configs';
 import { ICard } from '../../models';
 import classes from './CardSummaryCard.module.css';
 import CardSummaryCompanyImage from './CardSummaryCompanyImage';

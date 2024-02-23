@@ -3,6 +3,7 @@
 import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
 
 let firebaseApp: FirebaseApp | undefined;
+let budgetId: string | undefined;
 
 const setFirebaseAppsWithConfig = (config: FirebaseOptions) => {
     const firebaseConfig: FirebaseOptions = { ...config }
@@ -15,8 +16,14 @@ const getFirebaseApp = () => {
     return firebaseApp;
 }
 
+const setBudgetId = (aBudgetId: string) => {
+    budgetId = aBudgetId;
+}
+
 export {
     firebaseApp,
+    budgetId,
     setFirebaseAppsWithConfig,
     getFirebaseApp,
+    setBudgetId,
 }

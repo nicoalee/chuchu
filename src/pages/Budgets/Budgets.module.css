@@ -1,0 +1,11 @@
+.budget-option {
+    border: 4px solid var(--mantine-color-dark-2);
+    border-radius: 4px;
+    transition: 400ms;
+
+    &:hover {
+        cursor: pointer;
+        transition: 400ms;
+        background-color: var(--mantine-color-dark-5);
+    }
+}

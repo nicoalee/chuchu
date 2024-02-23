@@ -1,16 +1,14 @@
 import "./App.css";
 // Import the functions you need from the SDKs you need
-import { notifications } from '@mantine/notifications';
-import { getDatabase, ref, set } from "firebase/database";
 import { useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { getFirebaseApp, setFirebaseAppsWithConfig } from "./firebase";
-import Loading from "./pages/Loading/Loading";
-import Login from "./pages/Login/Login";
-import { Box, Container } from "@mantine/core";
+import { getFirebaseApp, setFirebaseAppsWithConfig } from "./configs";
+import Budgets from "./pages/Budgets/Budgets";
 import Card from "./pages/Card/Card";
-import CardsSummaryTimeline from "./pages/CardsSummaryTimeline/CardsSummaryTimeline";
 import CardSummary from "./pages/CardsSummary/CardSummary";
+import CardsSummaryTimeline from "./pages/CardsSummaryTimeline/CardsSummaryTimeline";
+import ProtectedRoute from "./pages/ProtectedRoute/ProtectedRoute";
+import EditCard from "./pages/EditCard/EditCard";
 
 // const writeUserData = (userId: string, name: string, email: string, imageUrl: string) => {
 //     const db = getDatabase();
@@ -211,10 +209,12 @@ function App() {
     return (
         <BrowserRouter>
             <Routes >
-                <Route path="/cards/:cardId" element={<Card />} />
-                <Route path="/cards-summary" element={<CardSummary />} />
-                <Route path="/cards-summary-timeline" element={<CardsSummaryTimeline />} />
-                <Route path="*" element={<Navigate to="/cards-summary" replace={true} />} />
+                <Route path="/" element={<Budgets />} />
+                <Route path="/cards/:cardId" element={<ProtectedRoute><Card /></ProtectedRoute>} />
+                <Route path="/cards/:cardId/edit" element={<ProtectedRoute><EditCard /></ProtectedRoute>} />
+                <Route path="/cards-summary" element={<ProtectedRoute><CardSummary /></ProtectedRoute>} />
+                <Route path="/cards-summary-timeline" element={<ProtectedRoute><CardsSummaryTimeline /></ProtectedRoute>} />
+                <Route path="*" element={<Navigate to="/" replace={true} />} />
             </Routes>
         </BrowserRouter>
     )
