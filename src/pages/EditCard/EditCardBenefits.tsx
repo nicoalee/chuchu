@@ -19,9 +19,9 @@ function EditCardBenefits({ form }: {
                     name: '',
                     description: '',
                     redemptions: [],
-                    numAllowedRedemptions: undefined,
-                    numMonthsAllowedRedemptionsReset: undefined,
-                    noReset: undefined
+                    numAllowedRedemptions: null,
+                    numMonthsAllowedRedemptionsReset: null,
+                    noReset: null
                 }
             ]
         })
@@ -40,11 +40,11 @@ function EditCardBenefits({ form }: {
                 <Button onClick={handleAddBenefit} ml="20" size="compact-xs" rightSection={<IconPlus />}>Add</Button>
             </Box>
             <Text mt="xs" size="xs">Note: this section has no effect on your goals and only serves as a reminder of the benefits for your credit card</Text>
-            <Box mt="lg" style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <Box mt="lg" style={{ display: 'flex', overflowX: 'auto' }}>
                 {(form.values.benefits || []).map((benefit, index) => (
-                    <Card m="xs" key={benefit.id}>
-                        <TextInput placeholder="free checked baggage" {...form.getInputProps(`benefits.${index}.name`)} />
-                        <Textarea mt="xs" placeholder="free checked bags for all air canada flights" {...form.getInputProps(`benefits.${index}.description`)} />
+                    <Card miw="300px" m="xs" key={benefit.id}>
+                        <TextInput label="Name" placeholder="free checked baggage" {...form.getInputProps(`benefits.${index}.name`)} />
+                        <Textarea label="Description" mt="xs" placeholder="free checked bags for all air canada flights" {...form.getInputProps(`benefits.${index}.description`)} />
                         <Switch mt="lg" mb="xs" label="isRedeemable" {...form.getInputProps(`benefits.${index}.isRedeemable`)} />
                         {benefit.isRedeemable && (
                             <>
@@ -55,7 +55,7 @@ function EditCardBenefits({ form }: {
                                 <Checkbox mt="xs" label="This benefit does not reset" {...form.getInputProps(`benefits.${index}.noReset`)} />
                             </>
                         )}
-                        <Button variant="subtle" c="red" onClick={() => handleDeleteBenefit(benefit.id)}>Delete</Button>
+                        <Button style={{ marginTop: 'auto' }} variant="subtle" c="red" onClick={() => handleDeleteBenefit(benefit.id)}>Delete</Button>
                     </Card>
                 ))}
             </Box>

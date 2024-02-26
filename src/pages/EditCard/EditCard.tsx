@@ -1,19 +1,20 @@
 
-import { Anchor, Box, Breadcrumbs, Button, Container, Divider, Image, NumberInput, SegmentedControl, Select, TextInput, Textarea, Title } from "@mantine/core";
+import { Anchor, Box, Breadcrumbs, Button, Container, Image, NumberInput, SegmentedControl, Select, TextInput, Textarea, Title } from "@mantine/core";
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { Notifications } from "@mantine/notifications";
+import { getDatabase, onValue, ref, set } from "firebase/database";
 import { useEffect, useRef } from "react";
-import { NavLink, useParams } from "react-router-dom";
-import { v4 as uuid } from 'uuid';
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getFirebaseApp } from "../../configs";
 import { COMPANIES, ECardType } from "../../constants";
-import { ICard, IEarnRate } from "../../models";
-import EditCardEarnRates from "./EditCardEarnRates";
+import { ICard, ISingleGoal } from "../../models";
 import EditCardBenefits from "./EditCardBenefits";
+import EditCardEarnRates from "./EditCardEarnRates";
 import EditCardGoals from "./EditCardGoals";
 
 function EditCard() {
+    const navigate = useNavigate();
     const initFormRef = useRef<boolean>(false);
     const { cardId } = useParams<{ cardId: string }>();
 
@@ -23,7 +24,7 @@ function EditCard() {
             description: '',
             rewardsPointsName: '',
             openDate: null,
-            closeDate: undefined,
+            closeDate: null,
             creditLimit: 0,
             annualFee: 0,
             companyId: undefined,
@@ -60,7 +61,21 @@ function EditCard() {
                 },
             },
             earnRates: {
-                name: val => val ? null : 'Name is required'
+                name: val => val ? null : 'Name is required',
+                description: val => val ? null : 'Description is required'
+            },
+            goals: {
+                name: val => val ? null : 'Name is required',
+                goalConfig: {
+                    goalStartDate: val => val ? null : 'Start Date is required',
+                    goalEndDate(value, values, path) {
+                        if (!values.goals) return null;
+                        const goalIndex = parseInt(path.split(".")[1]);
+                        const goalType = values.goals[goalIndex].goalType;
+                        if (goalType === 'REPEATED') return null;
+                        if (goalType === 'SINGLE') return value ? null : 'End Date is required'
+                    },
+                }
             }
         },
     })
@@ -75,19 +90,77 @@ function EditCard() {
             if (initFormRef.current) return;
             initFormRef.current = true;
             const snapshotVal = snapshot.val();
-            console.log({snapshotVal})
-            form.setValues({
+
+            const valuesFromDB: Partial<ICard> = {
                 ...form.values,
                 ...snapshotVal,
-                openDate: new Date(snapshotVal.openDate)
+            };
+
+            // convert dates from string to Date object
+            valuesFromDB.openDate = valuesFromDB.openDate ? new Date(valuesFromDB.openDate) : null;
+            valuesFromDB.closeDate = valuesFromDB.closeDate ? new Date(valuesFromDB.closeDate) : null;
+            (valuesFromDB.goals || []).forEach((goal) => {
+                goal.goalConfig.goalStartDate = goal.goalConfig.goalStartDate ? new Date(goal.goalConfig.goalStartDate) : null;
+                if (goal.goalType === 'SINGLE') {
+                    const singleGoalConfig = goal.goalConfig as ISingleGoal;
+                    singleGoalConfig.goalEndDate = singleGoalConfig.goalEndDate ? new Date(singleGoalConfig.goalEndDate) : null;
+                }
             });
+
+            form.setValues(valuesFromDB);
         })
 
         return () => unsub();
     }, [cardId, form])
 
     const handleSubmit = () => {
+        const app = getFirebaseApp();
+        if (!app) {
+            Notifications.show({
+                title: 'No firebase app connected',
+                message: 'Encountered an error while trying to save card details. Please contact Nick',
+                color: 'red'
+            })
+            return;
+        }
+        const db = getDatabase(app);
+        const cardRef = ref(db, `cards/${cardId}`);
 
+        const updatedCard: Partial<ICard> = {
+            ...form.values,
+            openDate: (form.values.openDate as Date).toISOString(),
+            closeDate: form.values.closeDate ? (form.values.closeDate as Date).toISOString() : null,
+            goals: (form.values.goals || []).map((goal) => {
+                const updatedGoal = { ...goal, goalConfig: { ...goal.goalConfig } };
+
+                if (goal.goalType === 'SINGLE') {
+                    const singleGoalConfig = updatedGoal.goalConfig as ISingleGoal;
+                    singleGoalConfig.goalEndDate = singleGoalConfig.goalEndDate ? (singleGoalConfig.goalEndDate as Date).toISOString() : null
+                }
+                updatedGoal.goalConfig.goalStartDate = updatedGoal.goalConfig.goalStartDate ? (updatedGoal.goalConfig.goalStartDate as Date).toISOString() : null
+
+                return {
+                    ...updatedGoal
+                }
+            })
+        }
+
+        set(cardRef, {
+            ...updatedCard
+        }).then(() => {
+            Notifications.show({
+                title: 'Success',
+                message: 'Card details saved',
+                color: 'green'
+            })
+            navigate(`/cards/${cardId}`);
+        }).catch(() => {
+            Notifications.show({
+                title: 'There was an error',
+                message: 'Encountered an error while trying to save card details. Please contact Nick',
+                color: 'red'
+            })
+        })
     }
 
     return (
@@ -118,8 +191,8 @@ function EditCard() {
                     </Box>
                     <Box mt="xs">
                         <Box display="flex" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
-                            <DatePickerInput w="48%" placeholder="Open Date" label="Open Date" {...form.getInputProps('openDate')}  />
-                            <DatePickerInput w="48%" placeholder="Close Date" label="Close Date" {...form.getInputProps('closeDate')}  />
+                            <DatePickerInput clearable w="48%" placeholder="Open Date" label="Open Date" {...form.getInputProps('openDate')}  />
+                            <DatePickerInput clearable w="48%" placeholder="Close Date" label="Close Date" {...form.getInputProps('closeDate')}  />
                         </Box>
                         <Box mt="xs" display="flex" style={{ alignItems: 'center', justifyContent: 'space-between', width: '48%' }}>
                             <NumberInput w="48%" label="Cycle Start Date" placeholder="Cycle Start Date" {...form.getInputProps('cycleStartDate')} />
@@ -127,7 +200,6 @@ function EditCard() {
                         </Box>
                     </Box>
                 </Box>
-
 
                 <Box ta="left" my="xl">
                     <Title order={2}>Rewards</Title>
@@ -138,12 +210,9 @@ function EditCard() {
                         )}
                     </Box>
 
-                    <EditCardGoals form={form} />
-
-                    <EditCardBenefits form={form}/>
-
                     <EditCardEarnRates form={form} />
-
+                    <EditCardBenefits form={form}/>
+                    <EditCardGoals form={form} />
                 </Box>
 
                 <Button mb="lg" fullWidth type="submit">Save</Button>

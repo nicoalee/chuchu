@@ -29,7 +29,7 @@ function CreateCardInFirebaseModal({ account, opened, onClose }: { account: ynab
         const reference = ref(db, `cards/${account.id}`);
         set(reference, {
             description: form.values.description,
-            openDate: form.values.openDate?.toUTCString(),
+            openDate: form.values.openDate?.toISOString(),
             creditLimit: form.values.creditLimit,
             cardType: form.values.cardType,
             name: account.name,

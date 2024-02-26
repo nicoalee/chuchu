@@ -25,17 +25,17 @@ function EditCardEarnRates({ form }: {
     }
 
     return (
-        <Box>
+        <Box mb="lg">
             <Box style={{ display: 'flex', alignItems: 'center' }}>
                 <Title order={5} w="100px">Earn Rates</Title>
                 <Button onClick={handleAddEarnRate} ml="20" size="compact-xs" rightSection={<IconPlus />}>Add</Button>
             </Box>
             <Text mt="xs" size="xs">Note: this section has no effect on your goals and only serves as a reminder of the earn rates for your credit card</Text>
-            <Box mt="lg" style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <Box mt="lg" style={{ display: 'flex', overflowX: 'auto' }}>
                 {(form.values.earnRates || []).map((earnRate, index) => (
-                    <Card m="xs" key={earnRate.id}>
-                        <TextInput mb="xs" placeholder="1.5 points per $1" {...form.getInputProps(`earnRates.${index}.name`)} />
-                        <Textarea mb="xs" placeholder="groceries and gas" {...form.getInputProps(`earnRates.${index}.description`)} />
+                    <Card miw="300px" m="xs" key={earnRate.id}>
+                        <TextInput mb="xs" label="Name" placeholder="1.5 points per $1" {...form.getInputProps(`earnRates.${index}.name`)} />
+                        <Textarea mb="xs" label="Description" placeholder="groceries and gas" {...form.getInputProps(`earnRates.${index}.description`)} />
                         <Button onClick={() => handleDeleteEarnRate(earnRate.id)} fullWidth c="red" variant="subtle">Delete</Button>
                     </Card>
                 ))}

@@ -1,10 +1,9 @@
 import { Container, Group, LoadingOverlay, SegmentedControl, Title } from "@mantine/core";
-import { useEffect, useState } from "react";
-import CardSummaryListView from "./CardSummaryListView";
-import * as ynab from 'ynab'
-import CardSummaryTimelineView from "./CardSummaryTimelineView";
-import useGetAccountsByBudgetId from "../../hooks/useGetAccountsByBudgetId";
+import { useState } from "react";
 import { budgetId } from "../../configs";
+import useGetAccountsByBudgetId from "../../hooks/useGetAccountsByBudgetId";
+import CardSummaryListView from "./CardSummaryListView";
+import CardSummaryTimelineView from "./CardSummaryTimelineView";
 
 function CardSummary() {
     const [ viewMode, setViewMode ] = useState<'LIST VIEW' | 'TIMELINE VIEW'>('LIST VIEW')

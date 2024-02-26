@@ -18,7 +18,7 @@ function CardSummaryCard(account: ynab.Account) {
         const app = getFirebaseApp();
         const db = getDatabase(app);
 
-        const reference = ref(db, `cards/${account.id}` )
+        const reference = ref(db, `cards/${account.id}`)
 
         const unsub = onValue(reference, (snapshot) => {
             const snapshotVal = snapshot.val();
@@ -51,12 +51,12 @@ function CardSummaryCard(account: ynab.Account) {
         <>
             <CreateCardInFirebaseModal account={account} opened={modalIsOpen} onClose={handleCloseModal} />
             <Card onClick={handleSelectCard} className={classes['card-summary-card']} h="300" w="250px" m="sm">
-                <CardSummaryCompanyImage accountName={account.name} />
+                <CardSummaryCompanyImage cardUrl={creditCard?.cardImageUrl} accountName={account.name} />
                 <div>
                     <Title h="60" mt="sm" mb="sm" ta="left" order={4}>{account.name}</Title>
                     <Text ta='left' c={creditCard ? 'inherit' : 'orange'}>
                         {
-                            creditCard ? 'Active' : 'No details have been added yet'
+                            creditCard ? creditCard?.description : 'No details have been added yet'
                         }
                     </Text>
                 </div>

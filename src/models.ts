@@ -10,7 +10,7 @@ export interface ICompany {
 export interface IRedemption {
     id: string;
     notes: string;
-    dateRedeemed: string; // ISO String
+    dateRedeemed: string | null | Date; // ISO String
 }
 
 export interface IBenefit {
@@ -18,9 +18,9 @@ export interface IBenefit {
     name: string;
     description: string;
     isRedeemable: boolean; // flag denoting whether the benefit is some generic perk (like free checked bags) or a usable perk (like a free lounge pass)
-    numAllowedRedemptions: number | undefined; // only if isRedeemable is true
-    numMonthsAllowedRedemptionsReset: number | undefined; // only if isRedeemable is true
-    noReset: boolean | undefined; // only defined if isRedeemable is true
+    numAllowedRedemptions: number | null; // only if isRedeemable is true
+    numMonthsAllowedRedemptionsReset: number | null; // only if isRedeemable is true
+    noReset: boolean | null; // only defined if isRedeemable is true
     redemptions: IRedemption[];
 }
 
@@ -30,23 +30,25 @@ export interface IEarnRate {
     description: string; // store how to earn it, i.e. via gas or grocery purchases
 }
 
+export interface ISingleGoal {
+    goalStartDate: string | null | Date;
+    goalEndDate: string | null | Date;
+}
+
+export interface IRepeatedGoal {
+    goalStartDate: string | null | Date;
+    repeatType: string;
+    numRepeats: number;
+}
+
 export interface IGoal {
     id: string;
     name: string;
     description: string;
     reward: number;
     spendRequired: number;
-    isCompleted: boolean;
-    rewardName: string;
     goalType: 'SINGLE' | 'REPEATED';
-    goalConfig: {
-        goalStartDate: string; // ISO String
-        goalEndDate: string; // ISO String
-    } | {
-        goalStartDate: string; // ISO String
-        repeatType: 'monthly'; // I have not come across goals that are not repeated monthly
-        numRepeats?: number; // for repeated goals only
-    }
+    goalConfig: ISingleGoal | IRepeatedGoal;
 }
 
 export interface ICard {
@@ -56,8 +58,8 @@ export interface ICard {
     rewardsPointsName?: string; // only if not cashback
     description: string;
     tradeline: ICard[];
-    openDate: string | null; // ISO Date
-    closeDate?: string | null; // ISO Date, the date that the card was closed or product switched. YNAB handles the closed state, but does not tell us when it was closed so it is up to the user to mark it as such
+    openDate: string | null | Date; // ISO Date
+    closeDate?: string | null | Date; // ISO Date, the date that the card was closed or product switched. YNAB handles the closed state, but does not tell us when it was closed so it is up to the user to mark it as such
     creditLimit: number;
     companyId: string;
     cardImageUrl: string;
