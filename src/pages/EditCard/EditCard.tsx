@@ -12,6 +12,7 @@ import { ICard, ISingleGoal } from "../../models";
 import EditCardBenefits from "./EditCardBenefits";
 import EditCardEarnRates from "./EditCardEarnRates";
 import EditCardGoals from "./EditCardGoals";
+import { DateTime } from "luxon";
 
 function EditCard() {
     const navigate = useNavigate();
@@ -73,7 +74,14 @@ function EditCard() {
                         const goalIndex = parseInt(path.split(".")[1]);
                         const goalType = values.goals[goalIndex].goalType;
                         if (goalType === 'REPEATED') return null;
-                        if (goalType === 'SINGLE') return value ? null : 'End Date is required'
+                        if (goalType === 'SINGLE') {
+                            if (!(values.goals[goalIndex].goalConfig as ISingleGoal)?.goalEndDate) return 'End Date is required';
+
+                            const startDate = DateTime.fromJSDate(values.goals[goalIndex].goalConfig.goalStartDate as Date);
+                            const endDate = DateTime.fromJSDate((values.goals[goalIndex].goalConfig as ISingleGoal).goalEndDate as Date);
+                            const diffDays = endDate.diff(startDate, 'days').days;
+                            if (diffDays <= 0) return 'End Date must be after Start Date';
+                        }
                     },
                 }
             }
@@ -210,9 +218,9 @@ function EditCard() {
                         )}
                     </Box>
 
+                    <EditCardGoals form={form} />
                     <EditCardEarnRates form={form} />
                     <EditCardBenefits form={form}/>
-                    <EditCardGoals form={form} />
                 </Box>
 
                 <Button mb="lg" fullWidth type="submit">Save</Button>

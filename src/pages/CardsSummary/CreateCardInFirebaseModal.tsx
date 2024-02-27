@@ -4,7 +4,7 @@ import { useForm } from '@mantine/form';
 import { Notifications } from "@mantine/notifications";
 import { getDatabase, ref, set } from "firebase/database";
 import { ECardType } from "../../constants";
-import { getFirebaseApp } from "../../configs";
+import { budgetId, getFirebaseApp } from "../../configs";
 import { ICard } from "../../models";
 import * as ynab from 'ynab';
 
@@ -23,6 +23,7 @@ function CreateCardInFirebaseModal({ account, opened, onClose }: { account: ynab
     })
 
     const handleSubmit = () => {
+        if (!budgetId) return;
         const app = getFirebaseApp();
         const db = getDatabase(app);
 
@@ -33,6 +34,7 @@ function CreateCardInFirebaseModal({ account, opened, onClose }: { account: ynab
             creditLimit: form.values.creditLimit,
             cardType: form.values.cardType,
             name: account.name,
+            budgetId: budgetId
         } as Partial<ICard>).then(() => {
             Notifications.show({
                 title: 'Sucess',

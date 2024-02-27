@@ -9,6 +9,7 @@ function useGetTransactionsByAccount(budgetId: string, accountId: string, sinceD
             return ynabAPI.transactions.getTransactionsByAccount(budgetId, accountId, sinceDate)
         },
         {
+            select: (res) => res.data.transactions,
             enabled: !!budgetId && !!accountId
         }
     );

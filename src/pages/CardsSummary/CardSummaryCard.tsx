@@ -53,14 +53,13 @@ function CardSummaryCard(account: ynab.Account) {
             <Card onClick={handleSelectCard} className={classes['card-summary-card']} h="300" w="250px" m="sm">
                 <CardSummaryCompanyImage cardUrl={creditCard?.cardImageUrl} accountName={account.name} />
                 <div>
-                    <Title h="60" mt="sm" mb="sm" ta="left" order={4}>{account.name}</Title>
-                    <Text ta='left' c={creditCard ? 'inherit' : 'orange'}>
+                    <Title h="30" mt="sm" mb="sm" ta="left" lineClamp={1} order={4}>{account.name}</Title>
+                    <Text lineClamp={3} ta='left' c={creditCard ? 'inherit' : 'orange'}>
                         {
                             creditCard ? creditCard?.description : 'No details have been added yet'
                         }
                     </Text>
                 </div>
-
             </Card>
         </>
     )

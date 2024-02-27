@@ -70,4 +70,5 @@ export interface ICard {
     earnRates: IEarnRate[];
     cycleStartDate: number; // note: start and end are approximations as it is up to each bank to determine cycle lengths. Cycle lengths can be within + or - 30 days
     cycleEndDate: number;
+    budgetId: string;
 }

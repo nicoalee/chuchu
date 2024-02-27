@@ -1,17 +1,26 @@
-import { Box, Container, List, LoadingOverlay, Title } from "@mantine/core";
+import { Container, List, LoadingOverlay, Text, Title } from "@mantine/core";
+import { IconReportMoney } from "@tabler/icons-react";
+import { useNavigate } from "react-router-dom";
+import { setBudgetId } from "../../configs";
 import useGetBudgets from "../../hooks/useGetBudgets";
 import classes from './Budgets.module.css';
-import { setBudgetId } from "../../configs";
-import { useNavigate } from "react-router-dom";
-import { IconReportMoney } from "@tabler/icons-react";
 
 function Budgets() {
     const navigate = useNavigate();
-    const { data, isLoading } = useGetBudgets();
+    const { data, isLoading, isError } = useGetBudgets();
 
     const handleSelectBudget = (budgetId: string) => {
         setBudgetId(budgetId);
         navigate(`/cards-summary`)
+    }
+
+    if (isError) {
+        return (
+            <Container m="xs" w="100%" maw="100%">
+                <Title ta="left" mb="xl">Select a budget</Title>
+                <Text ta="left" c="red">There was an error</Text>
+            </Container>
+        )
     }
 
     return (
