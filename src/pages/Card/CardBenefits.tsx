@@ -1,4 +1,4 @@
-import { Box, Title, Button, Card, Text } from "@mantine/core";
+import { Box, Title, Button, Card, Text, Spoiler } from "@mantine/core";
 import { IBenefit } from "../../models";
 
 function CardBenefits({benefits}: { benefits: IBenefit[] }) {
@@ -12,8 +12,8 @@ function CardBenefits({benefits}: { benefits: IBenefit[] }) {
                         borderRadius: '8px',
                         width: '250px',
                     }} mr="xs" mb="xs" miw="250px" key={benefit.id}>
-                        <Title order={4}>{benefit.name}</Title>
-                        <Text lineClamp={5}>{benefit.description}</Text>
+                        <Title mb="xs" order={4}>{benefit.name}</Title>
+                        <Spoiler mb="xs" showLabel="Show more" hideLabel="hide text">{benefit.description}</Spoiler>
                         {benefit.isRedeemable && (
                             <Button style={{ marginTop: 'auto' }} fullWidth>Redeem</Button>
                         )}
