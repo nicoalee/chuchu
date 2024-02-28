@@ -5,6 +5,7 @@ import ReactApexChart from 'react-apexcharts';
 import { getFirebaseApp } from '../../configs';
 import { ICard } from '../../models';
 import classes from './CardSummaryTimelineView.module.css';
+import { DateTime } from 'luxon';
 
 const CHART_OPTIONS: ApexOptions = {
     plotOptions: {
@@ -39,20 +40,20 @@ const CHART_OPTIONS: ApexOptions = {
     fill: {
         type: 'solid',
         opacity: 0.6,
-        colors: ['#ffffff']
     },
     legend: {
         show: false
     },
     tooltip: {
-        custom: ({ ctx, dataPointIndex, series, seriesIndex, w, y1, y2 }) => {
-            const datapoint = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
-
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        custom: ({ seriesIndex, w, y1, y2 }) => {
+            const name = w.globals.initialSeries[seriesIndex].name;
             return `
-                <div style="padding: 1rem; text-align: start">
-                    <b>${datapoint.x as string}</b>
+                <div style="padding: 1rem; text-align: start; color: blue">
+                    <b>${name as string}</b>
                     <br />
                     You've had this card for ${Math.round((y2 - y1) / (1000 * 60 * 60 * 24))} days
+                    (~${Math.round((y2 - y1) / (1000 * 60 * 60 * 24 * 30))} months)
                     <br />
                     ${new Date(y1).toDateString()} - ${new Date(y2).toDateString()}
                 </div>
@@ -60,6 +61,25 @@ const CHART_OPTIONS: ApexOptions = {
         }
     }
 };
+
+const getAnniversaryGoalsForCard = (cardName: string, openDate: string, closeDate?: string) => {
+    let openDateObj = DateTime.fromISO(openDate);
+    const closeDateObj = closeDate ? DateTime.fromISO(closeDate) : DateTime.now();
+
+    const goals = [];
+    while(closeDateObj.diff(openDateObj, 'years').years > -1) {
+        goals.push({
+            name: cardName,
+            value: openDateObj.toMillis(),
+            strokeColor: 'green',
+            strokeWidth: 10,
+            strokeHeight: 0,
+            strokeLineCap: 'round',
+        })
+        openDateObj = openDateObj.plus({ years: 1 });
+    }
+    return goals;
+}
 
 function CardSummaryTimelineView() {
     const [series, setSeries] = useState<ApexAxisChartSeries>();
@@ -77,18 +97,44 @@ function CardSummaryTimelineView() {
             const newSeries: ApexAxisChartSeries = [];
             cardsFromDB.forEach((card) => {
                 const tradeline = card.tradeline || [];
-                newSeries.push({
-                    name: card.name || '',
-                    data: [
-                        {
+                newSeries.push(
+                    {
+                        name: card.name || '',
+                        data: [
+                            {
+                                x: card.name,
+                                y: [
+                                    new Date(card.openDate || '').getTime(),
+                                    card.closeDate ? new Date(card.closeDate).getTime() : new Date().getTime()
+                                ],
+                                goals: [
+                                    ...getAnniversaryGoalsForCard(
+                                        card?.name || '',
+                                        card.openDate as string,
+                                        (card.closeDate as string | undefined) || undefined
+                                    )
+                                ]
+                            },
+                        ],
+                    },
+                    ...tradeline.map((oldCard) => ({
+                        name: oldCard.name,
+                        data: [{
                             x: card.name,
                             y: [
-                                new Date(card.openDate || '').getTime(),
-                                new Date().getTime()
+                                new Date(oldCard.openDate || '').getTime(),
+                                new Date(oldCard.closeDate || '').getTime()
                             ],
-                        },
-                    ],
-                })
+                            goals: [
+                                ...getAnniversaryGoalsForCard(
+                                    oldCard?.name,
+                                    oldCard?.openDate as string,
+                                    (oldCard?.closeDate as string | undefined) || undefined
+                                )
+                            ]
+                        }]
+                    }))
+                )
             })
 
             setSeries(newSeries);

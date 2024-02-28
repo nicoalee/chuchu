@@ -9,7 +9,7 @@ function CardSummaryCompanyImage({ accountName, cardUrl }: { accountName: string
 
     return (
         <Card.Section>
-            <Image style={{ height: '157px' }} width="100%" src={cardUrl || company?.imageURL} />
+            <Image style={{ height: '157px', borderRadius: '8px' }} width="100%" src={cardUrl || company?.imageURL} />
         </Card.Section>
     )
 }

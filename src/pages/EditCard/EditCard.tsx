@@ -3,7 +3,8 @@ import { Anchor, Box, Breadcrumbs, Button, Container, Image, NumberInput, Segmen
 import { DatePickerInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { Notifications } from "@mantine/notifications";
-import { getDatabase, onValue, ref, set } from "firebase/database";
+import { getDatabase, onValue, ref, update } from "firebase/database";
+import { DateTime } from "luxon";
 import { useEffect, useRef } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { getFirebaseApp } from "../../configs";
@@ -12,7 +13,6 @@ import { ICard, ISingleGoal } from "../../models";
 import EditCardBenefits from "./EditCardBenefits";
 import EditCardEarnRates from "./EditCardEarnRates";
 import EditCardGoals from "./EditCardGoals";
-import { DateTime } from "luxon";
 
 function EditCard() {
     const navigate = useNavigate();
@@ -68,7 +68,11 @@ function EditCard() {
             goals: {
                 name: val => val ? null : 'Name is required',
                 goalConfig: {
-                    goalStartDate: val => val ? null : 'Start Date is required',
+                    goalStartDate(value, values) {
+                        if (!values.goals) return null;
+                        if (!value) return 'Start Date is required';
+                        return null;
+                    },
                     goalEndDate(value, values, path) {
                         if (!values.goals) return null;
                         const goalIndex = parseInt(path.split(".")[1]);
@@ -79,8 +83,7 @@ function EditCard() {
 
                             const startDate = DateTime.fromJSDate(values.goals[goalIndex].goalConfig.goalStartDate as Date);
                             const endDate = DateTime.fromJSDate((values.goals[goalIndex].goalConfig as ISingleGoal).goalEndDate as Date);
-                            const diffDays = endDate.diff(startDate, 'days').days;
-                            if (diffDays <= 0) return 'End Date must be after Start Date';
+                            return endDate > startDate ? null : 'End Date must be after Start Date';
                         }
                     },
                 }
@@ -153,7 +156,7 @@ function EditCard() {
             })
         }
 
-        set(cardRef, {
+        update(cardRef, {
             ...updatedCard
         }).then(() => {
             Notifications.show({
@@ -187,7 +190,7 @@ function EditCard() {
                     <Box display="flex" mt="xs">
                         <TextInput w="100%" placeholder="Card Image URL" label="Card Image URL" {...form.getInputProps('cardImageUrl')} />
                         {form.values.cardImageUrl && (
-                            <Image ml="lg" src={form.values.cardImageUrl} w="100" />
+                            <Image style={{ borderRadius: '4px' }} ml="lg" src={form.values.cardImageUrl} w="100" />
                         )}
                     </Box>
                     <Select mt="xs" placeholder="Company" label="Company" data={COMPANIES.map((company) => ({ label: company.name, value: company.id }))} {...form.getInputProps('companyId')} />

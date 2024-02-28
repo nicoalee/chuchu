@@ -17,16 +17,12 @@ function CardSummary() {
                 <SegmentedControl value={viewMode} onChange={(val) => setViewMode(val as 'LIST VIEW' | 'TIMELINE VIEW')} data={['LIST VIEW', 'TIMELINE VIEW']} size="md" />
             </Group>
 
-            {
-                viewMode === 'LIST VIEW' && (
-                    <CardSummaryListView allAccounts={data || []} />
-                )
-            }
-            {
-                viewMode === 'TIMELINE VIEW' && (
-                    <CardSummaryTimelineView /> //allAcounts={allAccounts} 
-                )
-            }
+            {viewMode === 'LIST VIEW' && (
+                <CardSummaryListView allAccounts={data || []} />
+            )}
+            {viewMode === 'TIMELINE VIEW' && (
+                <CardSummaryTimelineView /> //allAcounts={allAccounts} 
+            )}
 
 
 

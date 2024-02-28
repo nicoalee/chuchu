@@ -19,9 +19,9 @@ function EditCardBenefits({ form }: {
                     name: '',
                     description: '',
                     redemptions: [],
-                    numAllowedRedemptions: null,
-                    numMonthsAllowedRedemptionsReset: null,
-                    noReset: null
+                    numAllowedRedemptions: 0,
+                    numMonthsAllowedRedemptionsReset: 0,
+                    noReset: false
                 }
             ]
         })

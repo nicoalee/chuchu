@@ -1,68 +1,76 @@
 import { DateTime } from "luxon";
 import { useMemo } from "react";
+import { IGoal } from "../models";
 import useGetTransactionsByAccount from "./useGetTransactionsByAccount";
+import { getMonthObjectsFromDateToNowOrClose, getRepeatedGoalOverview, getSingleGoalOverview, getTransactionsSpendBetweenStartAndEnd } from "./utils";
+
+export type IGoalOverviewMonth = IGoal & {
+    goalStatusString: string;
+    isGoalCurrentlyHappening: boolean;
+    spendRequiredForMonth: number;
+    totalSpendSinceGoalStartBeforeThisMonth?: number;
+
+    // for repeated goals
+    cycleInfo?: {
+        prevCycles: {
+            cycle: number;
+            goalCycleStart: DateTime<true> | DateTime<false>;
+            goalCycleEnd: DateTime<true> | DateTime<false>;
+            spendForCycle: number;
+            cycleCompleted: boolean;
+        }[];
+        currentCyleStart: DateTime<true> | DateTime<false>;
+        currentCycleEnd: DateTime<true> | DateTime<false>;
+        cycle: number;
+    };
+    totalSpendThisCycle?: number;
+}
 
 export interface ITransactionOverviewMonth {
     monthName: string; // January
+    monthNumber: number;
     yearName: string; // 2023
-    totalSpend: number;
-    key: string;
+    totalSpendThisMonth: number;
+    goals: IGoalOverviewMonth[];
 }
 
-const numToMonth: { [key: string]: string } = {
-    '01': 'January',
-    '02': 'February',
-    '03': 'March',
-    '04': 'April',
-    '05': 'May',
-    '06': 'June',
-    '07': 'July',
-    '08': 'August',
-    '09': 'September',
-    '10': 'October',
-    '11': 'November',
-    '12': 'December',
-}
-
-const createMappingFromMonths = (ccOpenDate: string) => {
-    const mapping = new Map<string, number>();
-    let luxonCCOpenDate = DateTime.fromISO(ccOpenDate);
-    while(luxonCCOpenDate.diffNow('days').days < 0) {
-        mapping.set(`${luxonCCOpenDate.year}${luxonCCOpenDate.month < 10 ? '0' : ''}${luxonCCOpenDate.month}`, 0);
-        luxonCCOpenDate = luxonCCOpenDate.plus({ months: 1 })
-    }
-    return mapping;
-}
-
-const getMappingKey = (date: DateTime) => {
-    return `${date.year}${date.month < 10 ? '0' : ''}${date.month}`
-}
-
-function useTransactionOverview(budgetId: string | undefined, accountId: string | undefined, openDate: string | undefined) {
+function useTransactionOverview(
+    budgetId: string | undefined,
+    accountId: string | undefined,
+    openDate: string | undefined,
+    closeDate: string | undefined,
+    goals: IGoal[] | undefined
+) {
     const { data, isLoading, isError } = useGetTransactionsByAccount(budgetId || '', accountId || '');
     const transactionOverviewMonths = useMemo(() => {
-        if (!data || !openDate) return [];
+        if (!data || !openDate || !goals) return [];
 
-        const mapping = createMappingFromMonths(openDate);
-        data.forEach((transaction) => {
-            // we only want recorded payments
-            if (transaction.amount >= 0) return;
-            const luxonTransactionDate = DateTime.fromISO(transaction.date);
-            const key = getMappingKey(luxonTransactionDate);
-            if (mapping.has(key)) {
-                mapping.set(key, (mapping.get(key) as number) + ((transaction.amount * -1)));
-            }
-        })
+        const transactionOverviewMonths: ITransactionOverviewMonth[] = [];
+        const numMonthsFromOpenDateToNow = getMonthObjectsFromDateToNowOrClose(
+            DateTime.fromISO(openDate),
+            closeDate ? DateTime.fromISO(closeDate) : undefined
+        );
+        numMonthsFromOpenDateToNow.forEach((monthObject) => {
+            const totalSpendThisMonth = getTransactionsSpendBetweenStartAndEnd(monthObject.monthStartDate, monthObject.monthEndDate, data);
 
-        return Array.from(mapping.entries()).map(([key, value]) => ({
-            key,
-            totalSpend: value / 1000,
-            monthName: numToMonth[key.slice(4, key.length)],
-            yearName: key.slice(0, 4)
-        })).sort((a, b) => {
-            return b.key.localeCompare(a.key);
-        }) as ITransactionOverviewMonth[]
-    }, [data, openDate])
+            const goalOverviews = goals.map((goal) => {
+                if (goal.goalType === 'SINGLE') {
+                    return getSingleGoalOverview(goal, monthObject, data);
+                } else {
+                    return getRepeatedGoalOverview(goal, monthObject, data);
+                }
+            })
+
+            transactionOverviewMonths.push({
+                monthName: monthObject.monthName,
+                yearName: monthObject.yearName,
+                totalSpendThisMonth: totalSpendThisMonth,
+                monthNumber: monthObject.monthNum,
+                goals: goalOverviews
+            })
+        });
+        return transactionOverviewMonths.reverse()
+    }, [closeDate, data, goals, openDate])
     return {
         transactionOverviewMonths, isLoading, isError
     }
