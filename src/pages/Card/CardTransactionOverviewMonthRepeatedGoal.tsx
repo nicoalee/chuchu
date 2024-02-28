@@ -83,7 +83,7 @@ function CardTransactionOverviewMonthRepeatedGoal({ goal }: { goal: IGoalOvervie
                 <RingProgress label={<Text size="lg" fw="bold" ta="center">{percentage}%</Text>} sections={[{value: percentage, color: 'teal'}]} />
             )}
             <Box>
-                <Box>
+                <Box style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                     {(goal.cycleInfo?.prevCycles || []).map((prevCycle) => (
                         <Badge key={prevCycle.cycle} style={{ margin: '2px' }} rightSection={prevCycle.cycleCompleted ? <IconCheck size="16" /> : <IconX size="16" />} color={prevCycle.cycleCompleted ? 'green' : 'red'}>
                             {prevCycle.cycle + 1}

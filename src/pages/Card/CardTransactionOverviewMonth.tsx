@@ -8,8 +8,8 @@ function CardTransactionOverviewMonth({ transactionOverviewMonth }: { transactio
     return (
         <Card mb="xs">
             <Box style={{ display: 'flex', alignItems: 'center' }}>
-                <IconCash /> 
-                <Title ml="xs" fw="bold" order={5} ta="left">
+                <IconCash color="green" /> 
+                <Title ml="xs" c="green" fw="bold" order={5} ta="left">
                     Total spend this month:{' '}
                     <NumberFormatter prefix="$ " value={transactionOverviewMonth.totalSpendThisMonth} thousandSeparator />
                 </Title>
