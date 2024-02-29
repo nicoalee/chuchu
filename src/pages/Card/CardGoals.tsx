@@ -1,4 +1,4 @@
-import { Box, Title } from "@mantine/core";
+import { Box, Card, Skeleton, Title } from "@mantine/core";
 import useTransactionOverview from "../../hooks/useTransactionOverview";
 import { ICard } from "../../models";
 import CardGoal from "./CardGoal";
@@ -12,6 +12,20 @@ function CardGoals({ card }: { card: Partial<ICard> | undefined }) {
         card?.closeDate as string | undefined,
         card?.goals || []
     );
+
+    if (isLoading) {
+        return (
+            <Box mb="md">
+                <Card w="350px" h="300px">
+                    <Skeleton height={20} mb="sm" />
+                    <Skeleton height={20} mb="sm" />
+                    <Skeleton style={{ margin: '0 auto' }} mb="sm" circle height={150} width={150} />
+                    <Skeleton height={20} mb="sm" />
+                    <Skeleton height={20} mb="sm" />
+                </Card>
+            </Box>
+        )
+    }
 
     return (
         <>

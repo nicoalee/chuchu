@@ -7,5 +7,8 @@
         background-color: var(--mantine-color-dark-5) !important;
         opacity: 0.8;
         transition: 400ms;
+        margin-bottom: 400px;
+        border-bottom: 4px solid;
+        border-color: gray;
     }
 }

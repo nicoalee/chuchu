@@ -1,12 +1,8 @@
-import { Box, Title, Text } from "@mantine/core";
-import { IconRepeatOff, IconRepeat } from "@tabler/icons-react";
-import { ISingleGoal, IRepeatedGoal, IGoal } from "../../models";
-import CardRepeatedGoal from "./CardGoalShowRepeatedDate";
-import CardSingleGoal from "./CardGoalShowSingleDate";
-import { ITransactionOverviewMonth } from "../../hooks/useTransactionOverview";
+import { Box, Text } from "@mantine/core";
 import { useMemo } from "react";
-import CardGoalShowSingleDate from "./CardGoalShowSingleDate";
-import CardTransactionOverviewMonthRepeatedGoal from "./CardTransactionOverviewMonthRepeatedGoal"
+import { ITransactionOverviewMonth } from "../../hooks/useTransactionOverview";
+import { IGoal } from "../../models";
+import CardTransactionOverviewMonthRepeatedGoal from "./CardTransactionOverviewMonthRepeatedGoal";
 import CardTransactionOverviewMonthSingleGoal from "./CardTransactionOverviewMonthSingleGoal";
 
 function CardGoal({ goal, transactionOverviewMonths }: { goal: IGoal, transactionOverviewMonths: ITransactionOverviewMonth[] }) {
@@ -47,11 +43,13 @@ function CardGoal({ goal, transactionOverviewMonths }: { goal: IGoal, transactio
         }} miw="350" mr="xs" mb="xs" p="md" key={goal.id}>
             {mostRecentGoalMonth.monthWithGoalInfo.goalType === 'SINGLE' ? (
                 <CardTransactionOverviewMonthSingleGoal
+                    showRewardWhenComplete={true}
                     totalSpendThisMonth={mostRecentGoalMonth.monthOverview.totalSpendThisMonth}
                     goal={mostRecentGoalMonth.monthWithGoalInfo}
                 />
             ) : (
                 <CardTransactionOverviewMonthRepeatedGoal
+                    showRewardWhenComplete={true}
                     goal={mostRecentGoalMonth.monthWithGoalInfo}
                 />
             )}

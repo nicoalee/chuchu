@@ -114,7 +114,7 @@ function Card() {
                     <>
                         <CardGoals card={card} />
                         <CardEarnRates earnRates={card?.earnRates || []} />
-                        <CardBenefits benefits={card?.benefits || []} />
+                        <CardBenefits cardId={card?.ynabCardId} cardOpenDate={card?.openDate as string} benefits={card?.benefits || []} />
                     </>
                 )}
                 {view === 'TRANSACTION_OVERVIEW' && (

@@ -1,11 +1,11 @@
-import { Box, RingProgress, Text, Title } from "@mantine/core";
+import { Box, NumberFormatter, RingProgress, Text, Title } from "@mantine/core";
 import { IconCircleCheckFilled, IconRepeatOff } from "@tabler/icons-react";
+import { DateTime } from "luxon";
 import { useMemo } from "react";
 import { IGoalOverviewMonth } from "../../hooks/useTransactionOverview";
 import { ISingleGoal } from "../../models";
-import { DateTime } from "luxon";
 
-function CardTransactionOverviewMonthSingleGoal({ goal, totalSpendThisMonth}: { goal: IGoalOverviewMonth, totalSpendThisMonth: number}) {
+function CardTransactionOverviewMonthSingleGoal({ goal, totalSpendThisMonth, showRewardWhenComplete}: { goal: IGoalOverviewMonth, totalSpendThisMonth: number, showRewardWhenComplete?: boolean}) {
     const percentage = useMemo(() => {
         if (totalSpendThisMonth > goal.spendRequiredForMonth) {
             return 100;
@@ -68,7 +68,10 @@ function CardTransactionOverviewMonthSingleGoal({ goal, totalSpendThisMonth}: { 
 
             {goalIsCompleted ? (
                 <Box>
-                    <Title order={6} c="green">Goal is complete</Title>
+                    <Title ta="center" order={6} c="green">Goal is complete</Title>
+                    {showRewardWhenComplete && (
+                        <Title ta="center" c="green" order={3}>Reward: <NumberFormatter thousandSeparator value={goal?.reward} /></Title>
+                    )}
                     <br />
                 </Box>
             ) : (

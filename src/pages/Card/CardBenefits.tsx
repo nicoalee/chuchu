@@ -1,23 +1,97 @@
-import { Box, Title, Button, Card, Text, Spoiler } from "@mantine/core";
-import { IBenefit } from "../../models";
+import { getDatabase, ref, update } from "@firebase/database";
+import { Box, Title } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import { v4 as uuid } from 'uuid';
+import { getFirebaseApp } from "../../configs";
+import { IBenefit, ICard } from "../../models";
+import CardBenefit from "./CardBenefit";
 
-function CardBenefits({benefits}: { benefits: IBenefit[] }) {
+function CardBenefits({benefits, cardId, cardOpenDate}: { benefits: IBenefit[], cardId: string | undefined, cardOpenDate: string }) {
+    const handleAddRedemption = (
+        benefitId: string,
+        notes: string,
+        redemptionDate: string
+    ) => {
+        if (!cardId) return;
+
+        const app = getFirebaseApp();
+        const db = getDatabase(app);
+
+        const reference = ref(db, `cards/${cardId}`);
+        const updatedBenefits = [...benefits];
+        const foundBenefit = updatedBenefits.find(x => x.id === benefitId);
+        if (!foundBenefit) return;
+
+        const redemptionList = foundBenefit.redemptions ? foundBenefit.redemptions : [];
+        redemptionList.push({
+            id: uuid(),
+            notes: notes,
+            dateRedeemed: redemptionDate
+        });
+        foundBenefit.redemptions = redemptionList
+
+        update(reference, {
+            benefits: updatedBenefits,
+        } as Partial<ICard>).then(() => {
+            Notifications.show({
+                title: 'Sucess',
+                message: 'Redemption recorded',
+                color: 'green',
+            })
+        }).catch(() => {
+            Notifications.show({
+                title: 'There was an error',
+                message: 'Encountered an error while trying to save card details. Please contact Nick',
+                color: 'red'
+            })
+        })
+    }
+
+    const handleDeleteRedemption = (benefitId: string, redemptionId: string) => {
+        if (!cardId) return;
+
+        const app = getFirebaseApp();
+        const db = getDatabase(app);
+        const reference = ref(db, `cards/${cardId}`);
+
+        const updatedBenefits = [...benefits];
+        const foundBenefitIndex = updatedBenefits.findIndex(x => x.id === benefitId);
+        if (foundBenefitIndex < 0) return;
+
+        const updatedRedemptions = [...(updatedBenefits[foundBenefitIndex]?.redemptions || [])].filter(x => x.id !== redemptionId);
+        updatedBenefits[foundBenefitIndex] = {
+            ...updatedBenefits[foundBenefitIndex],
+            redemptions: updatedRedemptions
+        }
+        update(reference, {
+            benefits: updatedBenefits,
+        } as Partial<ICard>).then(() => {
+            Notifications.show({
+                title: 'Sucess',
+                message: 'Redemption deleted',
+                color: 'green',
+            })
+        }).catch(() => {
+            Notifications.show({
+                title: 'There was an error',
+                message: 'Encountered an error while trying to save card details. Please contact Nick',
+                color: 'red'
+            })
+        })
+    }
+
     return (
         <>
             <Title order={3}>Benefits</Title>
             <Box my="lg" style={{ display: 'flex', overflowX: 'auto' }}>
                 {(benefits || []).map((benefit) => (
-                    <Card style={{
-                        backgroundColor: 'var(--mantine-color-dark-6)',
-                        borderRadius: '8px',
-                        width: '250px',
-                    }} mr="xs" mb="xs" miw="250px" key={benefit.id}>
-                        <Title mb="xs" order={4}>{benefit.name}</Title>
-                        <Spoiler mb="xs" showLabel="Show more" hideLabel="hide text">{benefit.description}</Spoiler>
-                        {benefit.isRedeemable && (
-                            <Button style={{ marginTop: 'auto' }} fullWidth>Redeem</Button>
-                        )}
-                    </Card>
+                    <CardBenefit
+                        key={benefit.id}
+                        onDeleteRedemption={handleDeleteRedemption}
+                        onAddRedemption={handleAddRedemption}
+                        benefit={benefit}
+                        cardOpenDate={cardOpenDate}
+                    />
                 ))}
             </Box>
         </>

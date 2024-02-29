@@ -1,10 +1,10 @@
-import { Badge, Box, RingProgress, Text, Title } from "@mantine/core";
+import { Badge, Box, NumberFormatter, RingProgress, Text, Title } from "@mantine/core";
 import { IconCheck, IconCircleCheckFilled, IconProgress, IconRepeat, IconX } from "@tabler/icons-react";
 import { useMemo } from "react";
 import { IGoalOverviewMonth } from "../../hooks/useTransactionOverview";
 import { IRepeatedGoal } from "../../models";
 
-function CardTransactionOverviewMonthRepeatedGoal({ goal }: { goal: IGoalOverviewMonth}) {
+function CardTransactionOverviewMonthRepeatedGoal({ goal, showRewardWhenComplete }: { goal: IGoalOverviewMonth, showRewardWhenComplete?: boolean}) {
     const percentage = useMemo(() => {
         if (!goal.totalSpendThisCycle) return 0;
         if (goal.totalSpendThisCycle >= goal.spendRequiredForMonth) {
@@ -53,6 +53,16 @@ function CardTransactionOverviewMonthRepeatedGoal({ goal }: { goal: IGoalOvervie
         return (goal.goalConfig as IRepeatedGoal).numRepeats === goal.cycleInfo?.prevCycles.length;
     }, [goal.cycleInfo?.prevCycles.length, goal.goalConfig])
 
+    const totalReward = useMemo(() => {
+        if (!showRewardWhenComplete) return '';
+        if (!goal.cycleInfo) return '';
+        const totalSuccessfulCycles = goal.cycleInfo.prevCycles.reduce((acc, curr) => {
+            if (curr.cycleCompleted) return acc + 1;
+            return acc;
+        }, 0)
+        return totalSuccessfulCycles * goal.reward;
+    }, [goal.cycleInfo, goal.reward, showRewardWhenComplete])
+
     if (!goal.isGoalCurrentlyHappening) {
         return <Box style={{ flexGrow: 1, width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Text>{goal.goalStatusString}</Text>
@@ -91,7 +101,12 @@ function CardTransactionOverviewMonthRepeatedGoal({ goal }: { goal: IGoalOvervie
                     ))}
                 </Box>
                 {allCyclesComplete ? (
-                    <Title mb="xs" order={6} ta="center" mt="xs" c="green">Goal is complete</Title>
+                    <>
+                        <Title mb="xs" order={6} ta="center" mt="xs" c="green">Goal is complete</Title>
+                        {showRewardWhenComplete && (
+                            <Title ta="center" c="green" order={3}>Reward: <NumberFormatter thousandSeparator value={totalReward} /></Title>
+                        )}
+                    </>
                 ) : (
                     <>
                         <Text size="sm" w="180" display="inline-block">Required spend: </Text>
