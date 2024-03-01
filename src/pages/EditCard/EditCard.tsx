@@ -193,8 +193,8 @@ function EditCard() {
                             <Image style={{ borderRadius: '4px' }} ml="lg" src={form.values.cardImageUrl} w="100" />
                         )}
                     </Box>
-                    <Select mt="xs" placeholder="Company" label="Company" data={COMPANIES.map((company) => ({ label: company.name, value: company.id }))} {...form.getInputProps('companyId')} />
-                    <TextInput mt="xs" placeholder="Name" label="Name" {...form.getInputProps('name')} />
+                    <Select mt="xs" required placeholder="Company" label="Company" data={COMPANIES.map((company) => ({ label: company.name, value: company.id }))} {...form.getInputProps('companyId')} />
+                    <TextInput mt="xs" required placeholder="Name" label="Name" {...form.getInputProps('name')} />
                     <Textarea mt="xs" placeholder="Description" label="Description" {...form.getInputProps('description')} />
                     <Box mt="xs" display="flex" style={{ alignItems: 'center', justifyContent: 'space-between' }}>
                         <NumberInput w="48%" label="Credit Limit" placeholder="Credit Limit" {...form.getInputProps('creditLimit')} />

@@ -21,7 +21,7 @@ function EditCardGoals({ form }: {
                     spendRequired: 0, 
                     goalType: 'SINGLE',
                     goalConfig: {
-                        goalStartDate: null,
+                        goalStartDate: form.values.openDate ? form.values.openDate : null,
                         goalEndDate: null
                     },
                 }
