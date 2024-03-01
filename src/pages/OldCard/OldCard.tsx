@@ -58,11 +58,11 @@ function OldCard() {
                 />
 
                 {view === 'SUMMARY' && (
-                    <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
+                    <>
                         <CardGoals card={oldCard} />
                         <CardEarnRates earnRates={oldCard?.earnRates || []} />
-                        <CardBenefits benefits={oldCard?.benefits || []} />
-                    </Box>
+                        <CardBenefits cardId={oldCard?.id} cardOpenDate={oldCard?.openDate as string} benefits={oldCard?.benefits || []} />
+                    </>
                 )}
                 {view === 'TRANSACTION_OVERVIEW' && (
                     <CardTransactionOverview accountId={cardId} budgetId={budgetId} card={oldCard} />

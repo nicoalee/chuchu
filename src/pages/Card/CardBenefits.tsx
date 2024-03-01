@@ -82,8 +82,8 @@ function CardBenefits({benefits, cardId, cardOpenDate}: { benefits: IBenefit[], 
 
     return (
         <>
-            <Title order={3}>Benefits</Title>
-            <Box my="lg" style={{ display: 'flex', overflowX: 'auto' }}>
+            <Title ta="left" order={3}>Benefits</Title>
+            <Box my="lg" style={{ display: 'flex', flexWrap: 'wrap' }}>
                 {(benefits || []).map((benefit) => (
                     <CardBenefit
                         key={benefit.id}

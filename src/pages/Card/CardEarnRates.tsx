@@ -4,7 +4,7 @@ import { IEarnRate } from "../../models";
 function CardEarnRates({ earnRates }: { earnRates: IEarnRate[] }) {
     return (
         <>
-            <Title order={3}>Earn Rates</Title>
+            <Title ta="left" order={3}>Earn Rates</Title>
             <Box my="lg" style={{ display: 'flex', overflowX: 'auto' }}>
                 {(earnRates || []).map((earnRate) => (
                     <Card

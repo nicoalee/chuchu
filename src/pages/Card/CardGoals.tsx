@@ -29,7 +29,7 @@ function CardGoals({ card }: { card: Partial<ICard> | undefined }) {
 
     return (
         <>
-            <Title order={3}>Goals</Title>
+            <Title ta="left" order={3}>Goals</Title>
             <Box my="lg" style={{ display: 'flex', overflowX: 'auto' }}>
                 {(card?.goals || []).map((goal) => (
                     <CardGoal key={goal.id} goal={goal} transactionOverviewMonths={transactionOverviewMonths} />
