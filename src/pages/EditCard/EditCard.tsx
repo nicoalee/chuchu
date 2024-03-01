@@ -113,6 +113,7 @@ function EditCard() {
             (valuesFromDB.goals || []).forEach((goal) => {
                 goal.goalConfig.goalStartDate = goal.goalConfig.goalStartDate ? new Date(goal.goalConfig.goalStartDate) : null;
                 if (goal.goalType === 'SINGLE') {
+                    goal.goalType
                     const singleGoalConfig = goal.goalConfig as ISingleGoal;
                     singleGoalConfig.goalEndDate = singleGoalConfig.goalEndDate ? new Date(singleGoalConfig.goalEndDate) : null;
                 }

@@ -76,7 +76,7 @@ function EditCardGoals({ form }: {
                                 <NumberInput w="48%" mb="xs" label="Reward" placeholder="reward" {...form.getInputProps(`goals.${index}.reward`)} />
                                 <NumberInput w="48%" mb="xs" label="Spend required" placeholder="Spend required" {...form.getInputProps(`goals.${index}.spendRequired`)} />
                             </Box>
-                            <SegmentedControl onChange={(data) => handleChangeGoalType(goal.id, data)} mb="xs" data={["SINGLE", "REPEATED"]} />
+                            <SegmentedControl onChange={(data) => handleChangeGoalType(goal.id, data)} mb="xs" value={goal.goalType} data={["SINGLE", "REPEATED"]} />
                             <DatePickerInput clearable placeholder="Feb 01 2021" label="Goal start date" mb="xs" {...form.getInputProps(`goals.${index}.goalConfig.goalStartDate`)} />
                             {formType === 'SINGLE' ? (
                                 <DatePickerInput clearable placeholder="Dec 13 2023" label="Goal end date" mb="xs" {...form.getInputProps(`goals.${index}.goalConfig.goalEndDate`)} />
