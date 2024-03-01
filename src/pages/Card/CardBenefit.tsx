@@ -109,7 +109,7 @@ function CardBenefit({
                 </Box>
             )}
             <Title order={4}>{benefit.name}</Title>
-            <Spoiler showLabel="Show more" hideLabel="hide text">{benefit.description}</Spoiler>
+            <Spoiler style={{ whiteSpace: 'pre-wrap' }} showLabel="Show more" hideLabel="hide text">{benefit.description}</Spoiler>
 
             {benefit.isRedeemable && (
                 <>
