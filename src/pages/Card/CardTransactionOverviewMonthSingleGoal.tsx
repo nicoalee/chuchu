@@ -63,7 +63,7 @@ function CardTransactionOverviewMonthSingleGoal({ goal, totalSpendThisMonth, sho
                     </Box>
                 } sections={[{ value: 100, color: 'green' }]}  />
             ) : (
-                <RingProgress label={<Text size="lg" fw="bold" ta="center">{percentage}%</Text>} sections={[{value: percentage, color: 'teal'}]} />
+                <RingProgress label={<Text size="lg" fw="bold" ta="center">{percentage}%</Text>} rootColor="gray" sections={[{value: percentage, color: 'teal'}]} />
             )}
 
             {goalIsCompleted ? (

@@ -1,4 +1,4 @@
-import { Card, Text, Title } from '@mantine/core';
+import { Card, Spoiler, Text, Title } from '@mantine/core';
 import { getDatabase, onValue, ref, set } from 'firebase/database';
 import { useEffect, useState } from 'react';
 import * as ynab from 'ynab';
@@ -90,15 +90,15 @@ function CardSummaryCard(account: ynab.Account) {
     return (
         <>
             <CreateCardInFirebaseModal onSubmit={handleSubmit} accountId={account.id} opened={modalIsOpen} onClose={() => setModalIsOpen(false)} />
-            <Card onClick={handleSelectCard} className={classes['card-summary-card']} h="300" w="250px" m="sm">
+            <Card onClick={handleSelectCard} className={classes['card-summary-card']} w="250px" m="sm">
                 <CardSummaryCompanyImage cardUrl={creditCard?.cardImageUrl} accountName={account.name} />
                 <div>
                     <Title h="30" mt="sm" mb="sm" ta="left" lineClamp={1} order={4}>{creditCard?.name || account.name}</Title>
-                    <Text lineClamp={3} ta='left' c={creditCard ? 'inherit' : 'yellow'}>
+                    <Spoiler onClick={(e) => e.stopPropagation()} showLabel="Show more" hideLabel="Hide" ta='left' style={{ whiteSpace: 'pre-wrap' }} c={creditCard?.description ? 'inherit' : 'yellow'}>
                         {
                             creditCard ? creditCard?.description : 'No details have been added yet. Click on this card to get started'
                         }
-                    </Text>
+                    </Spoiler>
                 </div>
             </Card>
         </>

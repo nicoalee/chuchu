@@ -63,25 +63,22 @@ export function getMonthObjectsFromDateToNowOrClose(date: DateTime, closeDate?: 
     const monthObjects: IMonthObject[] = [];
 
     let currentMonth = date;
-    let diffMonthsBetweenCurrentAndEnd = (closeDate ? currentMonth.diff(closeDate, 'months').months : currentMonth.diffNow('months').months);
-    while (diffMonthsBetweenCurrentAndEnd < (closeDate ? 1 : 0)) {
+    let startOfTheCurrentMonth = DateTime.fromISO(`${currentMonth.year}-${currentMonth.month < 10 ? '0' : ''}${currentMonth.month}-01`);
+    // let diffMonthsBetweenCurrentAndEnd = (closeDate ? currentMonth.diff(closeDate, 'months').months : currentMonth.diffNow('months').months);
+    while (startOfTheCurrentMonth <= (closeDate ? closeDate : DateTime.now())) {
         monthObjects.push({
             monthName: numToMonth[currentMonth.month],
             yearName: currentMonth.year.toString(),
             monthNum: currentMonth.month,
-            monthStartDate: DateTime.fromISO(`${currentMonth.year}-${currentMonth.month < 10 ? '0' : ''}${currentMonth.month}-01`),
+            monthStartDate: startOfTheCurrentMonth,
             monthEndDate: DateTime.fromISO(`${currentMonth.year}-${currentMonth.month < 10 ? '0' : ''}${currentMonth.month}-${currentMonth.daysInMonth}`)
         })
         currentMonth = currentMonth.plus({ months: 1 })
-        diffMonthsBetweenCurrentAndEnd = (closeDate ? currentMonth.diff(closeDate, 'months').months : currentMonth.diffNow('months').months);
+        startOfTheCurrentMonth = DateTime.fromISO(`${currentMonth.year}-${currentMonth.month < 10 ? '0' : ''}${currentMonth.month}-01`);
+        // diffMonthsBetweenCurrentAndEnd = (closeDate ? currentMonth.diff(closeDate, 'months').months : currentMonth.diffNow('months').months);
     }
     if (monthObjects.length > 0) {
         monthObjects[0].monthStartDate = date;
-        if (!closeDate) {
-            // if the card is not closed, it is safe to assume that the last element in the array is the current month and that
-            // that the time frame for that month is up to the current date
-            monthObjects[monthObjects.length - 1].monthEndDate = DateTime.now();
-        }
     }
     return monthObjects;
 }
@@ -100,6 +97,7 @@ export function getSingleGoalOverview(goal: IGoal, monthObject: IMonthObject, da
             ...goal,
         } as IGoalOverviewMonth
     }
+
     // check to see if we are after the goal end
     if (monthObject.monthStartDate > goalEndDate) {
         return {
@@ -111,7 +109,7 @@ export function getSingleGoalOverview(goal: IGoal, monthObject: IMonthObject, da
         } as IGoalOverviewMonth
     }
     const requiredSpendForGoal = goal.spendRequired;
-    const goalEndingThisMonth = goalEndDate.month === monthObject.monthEndDate.month && goalEndDate.year === monthObject.monthEndDate.year;
+    const goalEndingThisMonth = goalEndDate.month === (DateTime.now()).month && goalEndDate.year === (DateTime.now()).year;
     const totalSpendSinceGoalStartBeforeThisMonth = getTransactionsSpendBetweenStartAndEnd(goalStartDate, monthObject.monthStartDate.minus({ days: 1 }), data);
     const hasReachedGoal = requiredSpendForGoal - totalSpendSinceGoalStartBeforeThisMonth <= 0;
 
