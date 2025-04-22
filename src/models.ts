@@ -4,7 +4,8 @@ export interface ICompany {
     id: string,
     name: string,
     description: string,
-    imageURL: string,   
+    imageURL: string,
+    group: 'GLOBAL' | 'USA' | 'CANADA'
 }
 
 export interface IRedemption {

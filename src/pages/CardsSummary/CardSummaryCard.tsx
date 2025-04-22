@@ -1,15 +1,15 @@
-import { Card, Spoiler, Text, Title } from '@mantine/core';
+import { Card, Spoiler, Title } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import { getDatabase, onValue, ref, set } from 'firebase/database';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as ynab from 'ynab';
 import { getFirebaseApp } from '../../configs';
+import { ECardType } from '../../constants';
 import { ICard } from '../../models';
+import CreateCardInFirebaseModal from '../Modals/CreateCardInFirebaseModal';
 import classes from './CardSummaryCard.module.css';
 import CardSummaryCompanyImage from './CardSummaryCompanyImage';
-import CreateCardInFirebaseModal from '../Modals/CreateCardInFirebaseModal';
-import { useNavigate } from 'react-router-dom';
-import { ECardType } from '../../constants';
-import { Notifications } from '@mantine/notifications';
 
 function CardSummaryCard(account: ynab.Account) {
     const navigate = useNavigate();

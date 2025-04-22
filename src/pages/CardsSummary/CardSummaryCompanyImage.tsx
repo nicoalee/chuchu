@@ -4,7 +4,8 @@ import { Card, Image } from "@mantine/core";
 
 function CardSummaryCompanyImage({ accountName, cardUrl }: { accountName: string, cardUrl?: string }) {
     const company = useMemo(() => {
-        return COMPANIES.find((company) => accountName.toLocaleLowerCase().includes(company.id.toLocaleLowerCase()))
+        return COMPANIES.find((company) => accountName.toLocaleLowerCase().replace(/\s/g,'')
+            .includes(company.id.toLocaleLowerCase()))
     }, [accountName])
 
     return (

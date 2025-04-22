@@ -2,7 +2,7 @@ import { Box, Button, InputLabel, Modal, NumberInput, SegmentedControl, Select, 
 import { DatePickerInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import { budgetId } from "../../configs";
-import { COMPANIES, ECardType } from "../../constants";
+import { CACompanies, ECardType, GlobalCompanies, USCompanies } from "../../constants";
 import useGetAccountById from "../../hooks/useGetAccountById";
 
 function CreateCardInFirebaseModal({
@@ -66,7 +66,11 @@ function CreateCardInFirebaseModal({
             ) : (
                 <form onSubmit={form.onSubmit(handleSubmit)}>
                     <Box>
-                        <Select mt="xs" placeholder="Company" label="Company" data={COMPANIES.map((company) => ({ label: company.name, value: company.id }))} {...form.getInputProps('companyId')} />
+                        <Select mt="xs" placeholder="Company" label="Company" data={[
+                            { group: "Global", items: GlobalCompanies.map(company => ({ value: company.id, label: company.name })) },
+                            { group: "Canada", items: CACompanies.map(company => ({ value: company.id, label: company.name })) },
+                            { group: "USA", items: USCompanies.map(company => ({ value: company.id, label: company.name })) }
+                        ]} {...form.getInputProps('companyId')} />
                         <InputLabel mt="xs">Card Type</InputLabel>
                         <SegmentedControl fullWidth data={[ ECardType.CASHBACK, ECardType.POINTS ]} {...form.getInputProps('cardType')} />
                         <TextInput mt="md" name="description" label="Description" placeholder="what is this card for?" {...form.getInputProps('description')} />
