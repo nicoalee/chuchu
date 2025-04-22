@@ -21,7 +21,7 @@ function CardSummary() {
                 <CardSummaryListView allAccounts={data || []} />
             )}
             {viewMode === 'TIMELINE VIEW' && (
-                <CardSummaryTimelineView /> //allAcounts={allAccounts} 
+                <CardSummaryTimelineView allAccounts={data || []} />
             )}
 
 

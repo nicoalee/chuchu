@@ -3,7 +3,7 @@ import CardSummaryCard from "./CardSummaryCard"
 import * as ynab from 'ynab';
 import { useEffect, useState } from "react";
 
-function CardSummaryListView({  allAccounts}:{allAccounts: ynab.Account[]}) {
+function CardSummaryListView({  allAccounts }:{allAccounts: ynab.Account[]}) {
     const [accounts, setAccounts] = useState<ynab.Account[]>([]);
     const [closedAccounts, setClosedAccounts] = useState<ynab.Account[]>([])
 

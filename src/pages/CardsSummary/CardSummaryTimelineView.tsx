@@ -6,6 +6,7 @@ import { getFirebaseApp } from '../../configs';
 import { ICard } from '../../models';
 import classes from './CardSummaryTimelineView.module.css';
 import { DateTime } from 'luxon';
+import * as ynab from 'ynab';
 
 const CHART_OPTIONS: ApexOptions = {
     plotOptions: {
@@ -81,7 +82,7 @@ const getAnniversaryGoalsForCard = (cardName: string, openDate: string, closeDat
     return goals;
 }
 
-function CardSummaryTimelineView() {
+function CardSummaryTimelineView({ allAccounts }:{allAccounts: ynab.Account[]}) {
     const [series, setSeries] = useState<ApexAxisChartSeries>();
 
     useEffect(() => {
@@ -92,10 +93,10 @@ function CardSummaryTimelineView() {
             const cardsFromDB = Object.entries(snapshot.val() as {[id:string]: Partial<ICard>}).map(([key, value]) => ({
                 id: key,
                 ...value,
-            }))
+            }));
 
             const newSeries: ApexAxisChartSeries = [];
-            cardsFromDB.forEach((card) => {
+            cardsFromDB.filter((card) => !!allAccounts.find((account) => account.id === card.ynabCardId)).forEach((card) => {
                 const tradeline = card.tradeline || [];
                 newSeries.push(
                     {
