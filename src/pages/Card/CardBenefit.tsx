@@ -41,13 +41,13 @@ function CardBenefit({
     const thisRedemptionCycle = useMemo(() => {
         if (!benefit.isRedeemable) return null;
         if (!benefit.numMonthsAllowedRedemptionsReset) return null;
-        const startDate = DateTime.fromISO(cardOpenDate);
-        const endDate = startDate.plus({ months: benefit.numMonthsAllowedRedemptionsReset });
+        let startDate = DateTime.fromISO(cardOpenDate);
+        let endDate = startDate.plus({ months: benefit.numMonthsAllowedRedemptionsReset });
         const now = DateTime.now();
 
         while(now > endDate) {
-            startDate.plus({months: benefit.numMonthsAllowedRedemptionsReset });
-            endDate.plus({ months: benefit.numMonthsAllowedRedemptionsReset });
+            startDate = startDate.plus({months: benefit.numMonthsAllowedRedemptionsReset });
+            endDate = endDate.plus({ months: benefit.numMonthsAllowedRedemptionsReset });
         }
 
         return {
